@@ -1,7 +1,7 @@
-from pydantic import BaseModel
+from pydantic import BaseModel, ConfigDict
 
 
-class Product(BaseModel):
+class ProductBase(BaseModel):
     article: str
     ean_13: int
     name: str
@@ -15,3 +15,9 @@ class Product(BaseModel):
     ozon_article: str
     wb_article: str
     ym_article: str
+
+
+class Product(ProductBase):
+    model_config = ConfigDict(from_attributes=True)
+
+    id: int

@@ -1,22 +1,17 @@
 from typing import List
-
+from sqlalchemy.ext.asyncio import AsyncSession
 from fastapi import APIRouter, Depends
-from api.v1.services.depends import get_product_service
+
 
 from api.v1.schemas.products import Product
-from api.v1.services.products import ProductService
+from api.v1.repositories import products
+from core.db_helper import db_helper
 
 router = APIRouter(prefix="/products", tags=["products_v1"])
 
 
-@router.get(
-    "",
-    responses={400: {"message": "Bad"}},
-    response_model=List[Product],
-    description="Получить все продкуты",
-)
+@router.get("", response_model=List[Product])
 async def get_all_products(
-    product_service: ProductService = Depends(get_product_service),
-) -> List[Product]:
-    product = product_service.get_product()
-    return product
+    session: AsyncSession = Depends(db_helper.scoped_session_dependency),
+):
+    return await products.get_products(session=session)
