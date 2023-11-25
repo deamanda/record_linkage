@@ -2,21 +2,21 @@ from pydantic import BaseModel, ConfigDict
 
 
 class ProductBase(BaseModel):
-    article: str
-    ean_13: int
-    name: str
-    cost: float
-    recommended_price: float
-    category_id: int
-    ozon_name: str
-    name_1c: str
-    wb_name: str
-    ozon_article: str
-    wb_article: str
-    ym_article: str
+    id: int
+    article: str | None
+    ean_13: int | None
+    name: str | None
+    cost: float | None
+    recommended_price: float | None
+    category_id: int | None
+    ozon_name: str | None
+    name_1c: str | None
+    wb_name: str | None
+    ozon_article: str | None
+    wb_article: str | None
+    ym_article: str | None
 
 
 class Product(ProductBase):
-    model_config = ConfigDict(from_attributes=True)
-
     id: int
+    model_config = ConfigDict(from_attributes=True)
