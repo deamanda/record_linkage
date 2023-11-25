@@ -15,7 +15,7 @@ router = APIRouter(prefix="/products", tags=["products_v1"])
     response_model=List[Product],
     description="Получить все продкуты",
 )
-async def get_all_books(
+async def get_all_products(
     product_service: ProductService = Depends(get_product_service),
 ) -> List[Product]:
     product = product_service.get_product()
