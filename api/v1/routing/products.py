@@ -1,10 +1,10 @@
 from typing import List
 
 from fastapi import APIRouter, Depends
-from services.depends import get_product_service
+from api.v1.services.depends import get_product_service
 
-from schemas.products import Product
-from services.products import ProductService
+from api.v1.schemas.products import Product
+from api.v1.services.products import ProductService
 
 router = APIRouter(prefix="/products", tags=["products_v1"])
 

@@ -1,5 +1,5 @@
 from typing import List
-from schemas.products import Product
+from api.v1.schemas.products import Product
 
 
 class ProductRepository:

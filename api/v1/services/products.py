@@ -1,6 +1,6 @@
 from typing import List
-from repositories.products import ProductRepository
-from schemas.products import Product
+from api.v1.repositories.products import ProductRepository
+from api.v1.schemas.products import Product
 
 
 class ProductService:
