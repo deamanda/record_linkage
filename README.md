@@ -22,3 +22,11 @@ poetry install
 ```
 pre-commit install
 ``` 
+### Команды для создания миграций
+```
+alembic revision --autogenerate -m "Migration name"
+``` 
+### Команды для применения миграций
+```
+alembic upgrade head
+``` 
