@@ -5,9 +5,8 @@ class ProductBase(BaseModel):
     article: str
     ean_13: int
     name: str
-    cost: int
-    min_recommended_price: int
-    recommended_price: int
+    cost: float
+    recommended_price: float
     category_id: int
     ozon_name: str
     name_1c: str
