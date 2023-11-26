@@ -42,7 +42,30 @@ alembic upgrade head
 - В файле config прописать путь до бд в формате 'postgresql+asyncpg://user:password@host:port/name' c указанием своих user, name, host, port, password 
 - Запустить main.py
 
+# Docker
+### Склонировать репозиторий
+```
+https://github.com/deamanda/record_linkage.git
+``` 
+### Перейти в ветку dev/rash
+```
+git checkout dev/rash
+``` 
+### Перейти в папку infra
+```
+cd infra
+``` 
+### Запустить сборку образа
+```
+sudo docker-compose up -d
+``` 
+
+### Применить миграции
+```
+docker-compose exec backend alembic upgrade head
+``` 
 ### Документация по адресу
 ```
-http://127.0.0.1:8000/docs/v1
+http://localhost/docs/v1
 ``` 
+
