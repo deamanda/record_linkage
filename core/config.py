@@ -2,10 +2,8 @@ from pydantic_settings import BaseSettings
 
 
 class Settings(BaseSettings):
-    api_v1_prefix: str = "/api/api_v1"
-    db_url: str = (
-        "postgresql+asyncpg://{name}:{password}@localhost:5432/{name}"
-    )
+    api_prefix: str = "/api"
+    db_url: str = "postgresql+asyncpg://user:password@host:port/name"
     db_echo: bool = False
 
 
