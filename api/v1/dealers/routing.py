@@ -1,8 +1,8 @@
 from sqlalchemy.ext.asyncio import AsyncSession
 from fastapi import APIRouter, Depends, UploadFile, File
 
-from api.v1.dealers.repositories import get_dealerprice
-from api.v1.dealers.schemas import DealerPriceResponse
+from api.v1.dealers.repositories import get_dealerprice, get_dealer
+from api.v1.dealers.schemas import DealerPriceResponse, DealerResponse
 from core.db_helper import db_helper
 from fastapi import Query
 
@@ -44,14 +44,14 @@ async def get_all_dealer_price(
     return await get_dealerprice(session=session, page=page, size=size)
 
 
-# @router.get(
-#     "",
-#     response_model=List[Dealer],
-#     summary="Получить список дилеров",
-# )
-# async def get_all_dealer_price(
-#     session: AsyncSession = Depends(db_helper.scoped_session_dependency),
-#     page: int = Query(ge=1, default=1),
-#     size: int = Query(ge=1, le=100, default=10),
-# ):
-#     return await get_products(session=session, page=page, size=size)
+@router.get(
+    "",
+    response_model=DealerResponse,
+    summary="Получить список дилеров",
+)
+async def get_all_dealers(
+    session: AsyncSession = Depends(db_helper.scoped_session_dependency),
+    page: int = Query(ge=1, default=1),
+    size: int = Query(ge=1, le=100, default=10),
+):
+    return await get_dealer(session=session, page=page, size=size)
