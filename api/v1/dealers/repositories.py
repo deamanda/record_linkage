@@ -4,22 +4,22 @@ from typing import Sequence
 from sqlalchemy.future import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from models.products import Product
+from models.dealers import DealerPrice
 
 
-async def get_products(
+async def get_dealerprice(
     session: AsyncSession, page: int, size: int
-) -> dict[str, Sequence[Product] | dict[str, int]]:
-    stmt = select(Product).order_by(Product.id)
+) -> dict[str, Sequence[DealerPrice] | dict[str, int]]:
+    stmt = select(DealerPrice).order_by(DealerPrice.id)
     result = await session.execute(stmt)
-    all_products = result.scalars().all()
+    all_dealerprices = result.scalars().all()
 
     offset_min = (page - 1) * size
     offset_max = page * size
-    paginated_products = all_products[offset_min:offset_max]
+    paginated_dealerprice = all_dealerprices[offset_min:offset_max]
     pagination_info = {
         "page": page,
         "size": size,
-        "total_pages": math.ceil(len(all_products) / size) - 1,
+        "total_pages": math.ceil(len(all_dealerprices) / size) - 1,
     }
-    return {"pagination": pagination_info, "data": paginated_products}
+    return {"pagination": pagination_info, "data": paginated_dealerprice}
