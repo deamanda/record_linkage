@@ -2,7 +2,6 @@ from typing import List
 
 from pydantic import BaseModel, ConfigDict, AnyUrl
 from datetime import date
-from typing import Any, ClassVar
 
 from services.pagination import Pagination
 
@@ -15,11 +14,6 @@ class DealerPriceBase(BaseModel):
     product_name: str | None
     date: date
     dealer_id: int | None
-    example_data: ClassVar[dict[str, Any]] = {
-        "name": "John Doe",
-        "date_of_birth": "15-Jul-1996",
-        "gender": "m",
-    }
 
     class Config:
         json_encoders = {date: lambda v: v.strftime("%d.%m.%Y")}
@@ -27,14 +21,20 @@ class DealerPriceBase(BaseModel):
 
 class DealerPrice(DealerPriceBase):
     id: int
+
     model_config = ConfigDict(from_attributes=True)
 
 
 class Dealer(BaseModel):
-    id: str
+    id: int
     name: str
 
 
 class DealerPriceResponse(BaseModel):
     pagination: Pagination
     data: List[DealerPrice]
+
+
+class DealerResponse(BaseModel):
+    pagination: Pagination
+    data: List[Dealer]
