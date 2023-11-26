@@ -1,4 +1,8 @@
+from typing import List
+
 from pydantic import BaseModel, ConfigDict
+
+from services.pagination import Pagination
 
 
 class ProductBase(BaseModel):
@@ -20,3 +24,8 @@ class ProductBase(BaseModel):
 class Product(ProductBase):
     id: int
     model_config = ConfigDict(from_attributes=True)
+
+
+class ProductResponse(BaseModel):
+    pagination: Pagination
+    data: List[Product]

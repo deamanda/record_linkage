@@ -14,8 +14,8 @@ async def get_products(
     result = await session.execute(stmt)
     all_products = result.scalars().all()
 
-    offset_min = page * size
-    offset_max = (page + 1) * size
+    offset_min = (page - 1) * size
+    offset_max = page * size
     paginated_products = all_products[offset_min:offset_max]
     pagination_info = {
         "page": page,
