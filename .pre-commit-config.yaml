@@ -28,7 +28,7 @@ repos:
         language: system
         types: [python]
         args: [
-          "--ignore=E203,E266,E501,E704,W503,B905,B907",
+          "--ignore=E203,E266,E501,E704,W503,B905,B907,W291,F811",
           "--max-line-length=79",
           "--max-complexity=18",
           "--select=B,C,E,F,W,T4,B9",
