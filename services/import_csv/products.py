@@ -62,20 +62,3 @@ async def imports_product(file, session):
         await session.commit()
     finally:
         await session.close()
-
-
-# def get_products_filter(self, product_filter: ProductFilter,
-#                         page: int, size: int) -> list:
-#     offset_min = page * size
-#     offset_max = (page + 1) * size
-#     query_filter = product_filter.filter(select(Product))
-#     filtered_data = self.session.exec(query_filter).all()
-#     response = filtered_data[offset_min:offset_max] + [
-#         {
-#             "page": page,
-#             "size": size,
-#             "total": math.ceil(len(filtered_data) / size) - 1,
-#         }
-#     ]
-#
-#     return response
