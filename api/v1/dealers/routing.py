@@ -1,8 +1,16 @@
 from sqlalchemy.ext.asyncio import AsyncSession
 from fastapi import APIRouter, Depends, UploadFile, File
 
-from api.v1.dealers.repositories import get_dealerprice, get_dealer
-from api.v1.dealers.schemas import DealerPriceResponse, DealerResponse
+from api.v1.dealers.depends import dealerprice_by_id
+from api.v1.dealers.repositories import (
+    get_dealerprices,
+    get_dealer,
+)
+from api.v1.dealers.schemas import (
+    DealerPriceResponse,
+    DealerResponse,
+    DealerPrice,
+)
 from core.db_helper import db_helper
 from fastapi import Query
 
@@ -32,6 +40,17 @@ async def imports_dealers_csv(
 
 
 @router.get(
+    "/price/{dealerprice_id}/",
+    response_model=DealerPrice,
+    summary="Получить товар дилера",
+)
+async def get_dealer_price(
+    dealerprice: DealerPrice = Depends(dealerprice_by_id),
+):
+    return dealerprice
+
+
+@router.get(
     "/price/",
     response_model=DealerPriceResponse,
     summary="Получить товары дилеров",
@@ -41,7 +60,7 @@ async def get_all_dealer_price(
     page: int = Query(ge=1, default=1),
     size: int = Query(ge=1, le=100, default=10),
 ):
-    return await get_dealerprice(session=session, page=page, size=size)
+    return await get_dealerprices(session=session, page=page, size=size)
 
 
 @router.get(
