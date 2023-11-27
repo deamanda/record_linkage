@@ -1,4 +1,4 @@
-from sqlalchemy import String, Integer, Float, ForeignKey, Date
+from sqlalchemy import String, Integer, Float, ForeignKey, Date, Boolean
 from sqlalchemy.orm import Mapped, relationship
 from sqlalchemy.orm import mapped_column
 from models.base import Base
@@ -19,14 +19,13 @@ class Dealer(Base):
 
 
 class DealerPrice(Base):
-    product_key: Mapped[int] = mapped_column(Integer(), nullable=True)
-    price: Mapped[float] = mapped_column(Float(), nullable=True)
-    product_url: Mapped[str] = mapped_column(String(), nullable=True)
-    product_name: Mapped[str] = mapped_column(String(), nullable=True)
-    date: Mapped[date] = mapped_column(Date(), nullable=True)
-    dealer_id: Mapped[int] = mapped_column(
-        ForeignKey("dealers.id"), nullable=True
-    )
+    product_key: Mapped[int | None] = mapped_column(Integer())
+    price: Mapped[float | None] = mapped_column(Float())
+    product_url: Mapped[str | None] = mapped_column(String())
+    product_name: Mapped[str | None] = mapped_column(String())
+    date: Mapped[date | None] = mapped_column(Date())
+    mapped: Mapped[bool | None] = mapped_column(Boolean(), default=None)
+    dealer_id: Mapped[int | None] = mapped_column(ForeignKey("dealers.id"))
     dealer: Mapped["Dealer"] = relationship(back_populates="dealerprice")
 
     def __repr__(self) -> str:
