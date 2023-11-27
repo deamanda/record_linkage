@@ -14,6 +14,7 @@ class DealerPriceBase(BaseModel):
     product_name: str | None
     date: date
     dealer_id: int | None
+    mapped: bool | None
 
     class Config:
         json_encoders = {date: lambda v: v.strftime("%d.%m.%Y")}
