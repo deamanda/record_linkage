@@ -3,14 +3,6 @@ from models import DealerPrice, Dealer
 from datetime import datetime
 
 
-def try_parse_int(value):
-    try:
-        result = int(value)
-    except ValueError:
-        result = None
-    return result
-
-
 async def imports_dealerprice(file, session):
     try:
         data = await file.read()
@@ -37,7 +29,7 @@ async def imports_dealerprice(file, session):
                 ) = row
                 product_data = {
                     "id": int(id),
-                    "product_key": try_parse_int(product_key),
+                    "product_key": product_key if product_key else None,
                     "price": float(price) if price else None,
                     "product_url": product_url if product_url else None,
                     "product_name": product_name if product_name else None,
