@@ -14,7 +14,7 @@ from api.v1.dealers.schemas import (
 from core.db_helper import db_helper
 from fastapi import Query
 
-from services.dealers import imports_dealerprice, imports_dealers
+from services.import_csv.dealers import imports_dealerprice, imports_dealers
 
 router = APIRouter(prefix="/dealers", tags=["Товары дилера"])
 
