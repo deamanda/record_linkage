@@ -1,4 +1,4 @@
-from sqlalchemy import String, Integer, Float, ForeignKey, Date, Boolean
+from sqlalchemy import String, Float, ForeignKey, Date, Boolean
 from sqlalchemy.orm import Mapped, relationship
 from sqlalchemy.orm import mapped_column
 from models.base import Base
@@ -19,7 +19,7 @@ class Dealer(Base):
 
 
 class DealerPrice(Base):
-    product_key: Mapped[int | None] = mapped_column(Integer())
+    product_key: Mapped[str | None] = mapped_column(String())
     price: Mapped[float | None] = mapped_column(Float())
     product_url: Mapped[str | None] = mapped_column(String())
     product_name: Mapped[str | None] = mapped_column(String())
