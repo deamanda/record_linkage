@@ -1,8 +1,8 @@
 """Migration name
 
-Revision ID: 794434dd7488
+Revision ID: 88d2ccf39c18
 Revises: 
-Create Date: 2023-11-26 16:26:30.125535
+Create Date: 2023-11-27 20:50:40.575516
 
 """
 from typing import Sequence, Union
@@ -12,7 +12,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision: str = "794434dd7488"
+revision: str = "88d2ccf39c18"
 down_revision: Union[str, None] = None
 branch_labels: Union[str, Sequence[str], None] = None
 depends_on: Union[str, Sequence[str], None] = None
@@ -48,12 +48,13 @@ def upgrade() -> None:
     op.create_index(op.f("ix_products_id"), "products", ["id"], unique=False)
     op.create_table(
         "dealerprices",
-        sa.Column("product_key", sa.Integer(), nullable=False),
-        sa.Column("price", sa.Float(), nullable=False),
-        sa.Column("product_url", sa.String(), nullable=False),
-        sa.Column("product_name", sa.String(), nullable=False),
+        sa.Column("product_key", sa.String(), nullable=True),
+        sa.Column("price", sa.Float(), nullable=True),
+        sa.Column("product_url", sa.String(), nullable=True),
+        sa.Column("product_name", sa.String(), nullable=True),
         sa.Column("date", sa.Date(), nullable=False),
-        sa.Column("dealer_id", sa.Integer(), nullable=False),
+        sa.Column("mapped", sa.Boolean(), nullable=True),
+        sa.Column("dealer_id", sa.Integer(), nullable=True),
         sa.Column("id", sa.Integer(), nullable=False),
         sa.ForeignKeyConstraint(
             ["dealer_id"],
