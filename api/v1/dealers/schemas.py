@@ -1,6 +1,6 @@
 from typing import List
 
-from pydantic import BaseModel, ConfigDict, AnyUrl, computed_field
+from pydantic import BaseModel, ConfigDict, AnyUrl
 from datetime import date
 
 from services.pagination import Pagination
@@ -15,11 +15,6 @@ class DealerPriceBase(BaseModel):
     date: date
     dealer_id: int | None
     mapped: bool | None
-
-    @computed_field
-    @property
-    def mapped_products(self) -> List[list[int]]:
-        return [[23]]
 
     class Config:
         json_encoders = {date: lambda v: v.strftime("%d.%m.%Y")}
