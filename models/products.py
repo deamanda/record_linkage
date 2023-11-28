@@ -6,7 +6,7 @@ from models.base import Base
 
 
 class Product(Base):
-    article: Mapped[str | None] = mapped_column(String())
+    article: Mapped[str | None] = mapped_column(String(), unique=True)
     ean_13: Mapped[int | None] = mapped_column(BigInteger())
     name: Mapped[str | None] = mapped_column(String())
     cost: Mapped[float | None] = mapped_column(Float())

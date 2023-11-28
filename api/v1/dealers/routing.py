@@ -16,6 +16,7 @@ from fastapi import Query
 
 from services.import_csv.dealers import imports_dealerprice, imports_dealers
 
+
 router = APIRouter(prefix="/dealers", tags=["Товары дилера"])
 
 

@@ -1,4 +1,10 @@
-from sqlalchemy import String, Float, ForeignKey, Date, Boolean
+from sqlalchemy import (
+    String,
+    Float,
+    ForeignKey,
+    Date,
+    Boolean,
+)
 from sqlalchemy.orm import Mapped, relationship
 from sqlalchemy.orm import mapped_column
 from models.base import Base

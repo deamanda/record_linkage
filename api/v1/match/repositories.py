@@ -1,7 +1,9 @@
 from sqlalchemy.future import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from api.v1.match.schemas import ProductDealerKey
 from models.products import Product
+from models.product_dealer import ProductDealer
 
 
 async def get_mapped(session: AsyncSession, products_id) -> list[Product]:
@@ -11,3 +13,12 @@ async def get_mapped(session: AsyncSession, products_id) -> list[Product]:
     selected_products = list(result.scalars().all())
     selected_products.sort(key=lambda x: products_id.index(x.id))
     return selected_products
+
+
+async def post_mapped(
+    session: AsyncSession, mapped_in: ProductDealerKey
+) -> ProductDealer:
+    mapped = ProductDealer(**mapped_in.model_dump())
+    session.add(mapped)
+    await session.commit()
+    return mapped
