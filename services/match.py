@@ -17,7 +17,6 @@ async def create_embeddings_factory(file):
     df_factory_name = df_factory[["id", "name"]]
     embeddings_factory = get_embeddings(list(df_factory_name["name"]))
     df_factory_name["embeddings_factory"] = embeddings_factory.tolist()
-
     return embeddings_factory, df_factory_name
 
 
@@ -26,7 +25,7 @@ async def match(market_prod_names: list, count_var: int, file):
         count_var = 5
     embeddings_market = get_embeddings(market_prod_names)
     embeddings_product, df_factory_name = await create_embeddings_factory(file)
-
+    print(df_factory_name)
     result = []
     for emb in embeddings_market:
         distances = cdist(
