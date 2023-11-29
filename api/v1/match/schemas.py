@@ -1,6 +1,6 @@
-from pydantic import BaseModel
+from pydantic import BaseModel, conint
 
 
 class ProductDealerKey(BaseModel):
-    key: int
-    product_id: int
+    key: conint(gt=0)
+    product_id: conint(gt=0)

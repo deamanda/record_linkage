@@ -11,12 +11,12 @@ from api.v1.products.schemas import Product
 from core.db_helper import db_helper
 from fastapi import Query
 
-router = APIRouter(prefix="/matching", tags=["Товары заказчика"])
+router = APIRouter(prefix="/matching", tags=["Сопоставление"])
 
 
 @router.get(
     "/{product_id}/",
-    summary="Получить сопоставленные товары заказчика",
+    summary="Получить сопоставляемые товары заказчика",
     response_model=List[Product],
 )
 async def get_mapped_products(
