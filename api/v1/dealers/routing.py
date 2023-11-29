@@ -49,7 +49,7 @@ async def get_dealer_price(
 
 
 @router.get(
-    "/price/",
+    "/price",
     response_model=LimitOffsetPage[DealerPrice],
     summary="Получить товары дилеров",
 )

@@ -1,16 +1,16 @@
 """Migration name
 
-Revision ID: 1384f3c71510
-Revises: 420ea675cd76
-Create Date: 2023-11-29 13:52:29.215344
+Revision ID: cc3712ec04c5
+Revises: 07906fcb7035
+Create Date: 2023-11-29 19:19:32.796762
 
 """
 from typing import Sequence, Union
 
 
 # revision identifiers, used by Alembic.
-revision: str = "1384f3c71510"
-down_revision: Union[str, None] = "420ea675cd76"
+revision: str = "cc3712ec04c5"
+down_revision: Union[str, None] = "07906fcb7035"
 branch_labels: Union[str, Sequence[str], None] = None
 depends_on: Union[str, Sequence[str], None] = None
 

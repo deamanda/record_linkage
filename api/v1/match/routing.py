@@ -3,9 +3,10 @@ from typing import List
 
 from sqlalchemy.ext.asyncio import AsyncSession
 from fastapi import APIRouter, Depends
+from fastapi_pagination import LimitOffsetPage, paginate
 
-from api.v1.match.repositories import get_mapped, post_mapped
-from api.v1.match.schemas import ProductDealerKey
+from api.v1.match.repositories import get_mapped, post_mapped, get_matcheds
+from api.v1.match.schemas import ProductDealerKey, ProductDealer
 from api.v1.products.depends import product_by_id
 from api.v1.products.schemas import Product
 from core.db_helper import db_helper
@@ -39,3 +40,15 @@ async def post_mapped_products(
     session: AsyncSession = Depends(db_helper.scoped_session_dependency),
 ):
     return await post_mapped(session=session, mapped_in=mapped_in)
+
+
+@router.get(
+    "/all",
+    summary="Получить уже сопоставленные товары",
+    response_model=LimitOffsetPage[ProductDealer],
+)
+async def get_matched(
+    session: AsyncSession = Depends(db_helper.scoped_session_dependency),
+):
+    value = await get_matcheds(session=session)
+    return paginate(value)

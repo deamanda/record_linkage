@@ -1,5 +1,6 @@
 from sqlalchemy.future import select
 from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy.orm import joinedload
 
 from api.v1.match.depends import product_dealer_validate
 from api.v1.match.schemas import ProductDealerKey
@@ -24,3 +25,14 @@ async def post_mapped(
     session.add(mapped)
     await session.commit()
     return mapped
+
+
+async def get_matcheds(session: AsyncSession):
+    stmt = select(ProductDealer).options(
+        joinedload(ProductDealer.product),
+        joinedload(ProductDealer.dealerprice),
+    )
+
+    result = await session.execute(stmt)
+    all_products = result.scalars().all()
+    return all_products
