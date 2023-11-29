@@ -7,14 +7,12 @@ from api.v1.dealers.repositories import (
     get_dealer,
 )
 from api.v1.dealers.schemas import (
-    DealerPriceResponse,
-    DealerResponse,
     DealerPrice,
+    Dealer,
 )
 from core.db_helper import db_helper
-from fastapi import Query
-
-from services.dealers import imports_dealerprice, imports_dealers
+from fastapi_pagination import LimitOffsetPage, paginate
+from services.import_csv.dealers import imports_dealerprice, imports_dealers
 
 router = APIRouter(prefix="/dealers", tags=["Товары дилера"])
 
@@ -51,26 +49,24 @@ async def get_dealer_price(
 
 
 @router.get(
-    "/price/",
-    response_model=DealerPriceResponse,
+    "/price",
+    response_model=LimitOffsetPage[DealerPrice],
     summary="Получить товары дилеров",
 )
 async def get_all_dealer_price(
     session: AsyncSession = Depends(db_helper.scoped_session_dependency),
-    page: int = Query(ge=1, default=1),
-    size: int = Query(ge=1, le=100, default=10),
 ):
-    return await get_dealerprices(session=session, page=page, size=size)
+    value = await get_dealerprices(session=session)
+    return paginate(value)
 
 
 @router.get(
     "",
-    response_model=DealerResponse,
+    response_model=LimitOffsetPage[Dealer],
     summary="Получить список дилеров",
 )
 async def get_all_dealers(
     session: AsyncSession = Depends(db_helper.scoped_session_dependency),
-    page: int = Query(ge=1, default=1),
-    size: int = Query(ge=1, le=100, default=10),
 ):
-    return await get_dealer(session=session, page=page, size=size)
+    value = await get_dealer(session=session)
+    return paginate(value)

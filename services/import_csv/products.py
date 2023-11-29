@@ -18,7 +18,6 @@ async def imports_product(file, session):
 
             try:
                 (
-                    id,
                     article,
                     ean_13,
                     name,
@@ -32,9 +31,8 @@ async def imports_product(file, session):
                     wb_article,
                     ym_article,
                     wb_article_td,
-                ) = row[1:]
+                ) = row[2:]
                 product_data = {
-                    "id": int(id),
                     "article": article if article else None,
                     "ean_13": int(float(ean_13)) if ean_13 else None,
                     "name": name if name else None,
@@ -62,20 +60,3 @@ async def imports_product(file, session):
         await session.commit()
     finally:
         await session.close()
-
-
-# def get_products_filter(self, product_filter: ProductFilter,
-#                         page: int, size: int) -> list:
-#     offset_min = page * size
-#     offset_max = (page + 1) * size
-#     query_filter = product_filter.filter(select(Product))
-#     filtered_data = self.session.exec(query_filter).all()
-#     response = filtered_data[offset_min:offset_max] + [
-#         {
-#             "page": page,
-#             "size": size,
-#             "total": math.ceil(len(filtered_data) / size) - 1,
-#         }
-#     ]
-#
-#     return response

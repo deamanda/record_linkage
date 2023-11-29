@@ -1,9 +1,5 @@
-from typing import List
-
 from pydantic import BaseModel, ConfigDict, AnyUrl
 from datetime import date
-
-from services.pagination import Pagination
 
 
 class DealerPriceBase(BaseModel):
@@ -22,20 +18,9 @@ class DealerPriceBase(BaseModel):
 
 class DealerPrice(DealerPriceBase):
     id: int
-
     model_config = ConfigDict(from_attributes=True)
 
 
 class Dealer(BaseModel):
     id: int
     name: str
-
-
-class DealerPriceResponse(BaseModel):
-    pagination: Pagination
-    data: List[DealerPrice]
-
-
-class DealerResponse(BaseModel):
-    pagination: Pagination
-    data: List[Dealer]

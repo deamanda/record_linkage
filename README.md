@@ -68,4 +68,3 @@ docker-compose exec backend alembic upgrade head
 ```
 http://localhost/docs/v1
 ``` 
-

@@ -1,6 +1,9 @@
 from dotenv import load_dotenv
 from pydantic_settings import BaseSettings
 import os
+from fastapi_pagination.utils import disable_installed_extensions_check
+
+disable_installed_extensions_check()
 
 load_dotenv()
 
