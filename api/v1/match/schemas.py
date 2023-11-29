@@ -15,3 +15,7 @@ class ProductDealer(BaseModel):
     product: Product
     dealerprice: DealerPrice
     created_at: datetime
+    status: bool
+
+    class Config:
+        json_encoders = {datetime: lambda v: v.strftime("%d.%m.%Y %H:%M:%S")}

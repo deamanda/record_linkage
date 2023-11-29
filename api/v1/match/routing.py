@@ -5,7 +5,12 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from fastapi import APIRouter, Depends
 from fastapi_pagination import LimitOffsetPage, paginate
 
-from api.v1.match.repositories import get_mapped, post_mapped, get_matcheds
+from api.v1.match.repositories import (
+    get_mapped,
+    post_mapped,
+    get_matcheds,
+    post_not_mapped,
+)
 from api.v1.match.schemas import ProductDealerKey, ProductDealer
 from api.v1.products.depends import product_by_id
 from api.v1.products.schemas import Product
@@ -16,7 +21,7 @@ router = APIRouter(prefix="/matching", tags=["Сопоставление"])
 
 
 @router.get(
-    "/{product_id}/",
+    "/{dealerprice_id}/",
     summary="Получить сопоставляемые товары заказчика",
     response_model=List[Product],
 )
@@ -31,15 +36,27 @@ async def get_mapped_products(
 
 
 @router.post(
-    "",
-    summary="Сопоставить товары",
-    response_model=ProductDealerKey,
+    "/accepted",
+    summary="Сопоставить товары (есть сопоставление)",
+    response_model=dict,
 )
 async def post_mapped_products(
     mapped_in: ProductDealerKey,
     session: AsyncSession = Depends(db_helper.scoped_session_dependency),
 ):
     return await post_mapped(session=session, mapped_in=mapped_in)
+
+
+@router.post(
+    "/not-accepted",
+    summary="Сопоставить товары (нет сопоставления)",
+    response_model=dict,
+)
+async def post_not_mapped_products(
+    mapped_in: ProductDealerKey,
+    session: AsyncSession = Depends(db_helper.scoped_session_dependency),
+):
+    return await post_not_mapped(session=session, mapped_in=mapped_in)
 
 
 @router.get(

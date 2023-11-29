@@ -9,6 +9,7 @@ from sqlalchemy import (
     event,
     DateTime,
     func,
+    Boolean,
 )
 from sqlalchemy.orm import Mapped, relationship
 
@@ -27,6 +28,7 @@ class ProductDealer(Base):
     product_id: Mapped[int] = Column(Integer, ForeignKey("products.id"))
     dealer_id: Mapped[int] = Column(Integer, ForeignKey("dealers.id"))
     created_at: Mapped[datetime] = Column(DateTime, default=func.now())
+    status: Mapped[bool] = Column(Boolean())
     dealerprice: Mapped["DealerPrice"] = relationship(
         back_populates="productdealer"
     )
