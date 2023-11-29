@@ -1,9 +1,12 @@
 import uvicorn
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi_pagination import add_pagination
+
 
 from core.config import settings
 from api.v1 import router as router_v1
+
 
 app = FastAPI(
     title="Prosept - разметка товаров",
@@ -21,6 +24,7 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+add_pagination(app)
 
 if __name__ == "__main__":
     uvicorn.run("main:app", reload=True, port=8001)

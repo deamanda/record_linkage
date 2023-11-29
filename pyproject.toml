@@ -16,6 +16,7 @@ asyncpg = "^0.29.0"
 pydantic-settings = "^2.1.0"
 python-multipart = "^0.0.6"
 gunicorn = "^21.2.0"
+fastapi-pagination = "^0.12.13"
 
 [tool.poetry.group.dev.dependencies]
 black = "^23.11.0"
