@@ -1,6 +1,14 @@
 from pydantic import BaseModel, ConfigDict
 
 
+class ProductSmall(BaseModel):
+    id: int
+    name: str | None
+    article: str | None
+    recommended_price: float | None
+    cost: float | None
+
+
 class ProductBase(BaseModel):
     id: int
     article: str | None

@@ -4,11 +4,12 @@ from fastapi import APIRouter, Depends, UploadFile, File
 from api.v1.dealers.depends import dealerprice_by_id
 from api.v1.dealers.repositories import (
     get_dealerprices,
-    get_dealer,
+    get_dealers,
 )
 from api.v1.dealers.schemas import (
     DealerPrice,
     Dealer,
+    DealerPriceView,
 )
 from core.db_helper import db_helper
 from fastapi_pagination import LimitOffsetPage, paginate
@@ -39,7 +40,7 @@ async def imports_dealers_csv(
 
 @router.get(
     "/price/{dealerprice_id}/",
-    response_model=DealerPrice,
+    response_model=DealerPriceView,
     summary="Получить товар дилера",
 )
 async def get_dealer_price(
@@ -50,7 +51,7 @@ async def get_dealer_price(
 
 @router.get(
     "/price",
-    response_model=LimitOffsetPage[DealerPrice],
+    response_model=LimitOffsetPage[DealerPriceView],
     summary="Получить товары дилеров",
 )
 async def get_all_dealer_price(
@@ -68,5 +69,5 @@ async def get_all_dealer_price(
 async def get_all_dealers(
     session: AsyncSession = Depends(db_helper.scoped_session_dependency),
 ):
-    value = await get_dealer(session=session)
+    value = await get_dealers(session=session)
     return paginate(value)

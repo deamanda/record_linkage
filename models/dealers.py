@@ -40,7 +40,7 @@ class DealerPrice(Base):
     date: Mapped[date | None] = mapped_column(Date())
     dealer_id: Mapped[int | None] = mapped_column(ForeignKey("dealers.id"))
     dealer: Mapped["Dealer"] = relationship(back_populates="dealerprice")
-    productdealer: Mapped[list["ProductDealer"]] = relationship(
+    productdealer: Mapped["ProductDealer"] = relationship(
         back_populates="dealerprice"
     )
 

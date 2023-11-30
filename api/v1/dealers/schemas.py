@@ -1,6 +1,18 @@
 from pydantic import BaseModel, ConfigDict, AnyUrl
 from datetime import date
 
+from api.v1.products.schemas import ProductSmall
+
+
+class ProductDealerPrice(BaseModel):
+    status: bool | None
+    product: ProductSmall | None
+
+
+class Dealer(BaseModel):
+    id: int
+    name: str
+
 
 class DealerPriceBase(BaseModel):
     id: int
@@ -9,7 +21,6 @@ class DealerPriceBase(BaseModel):
     product_url: AnyUrl | None
     product_name: str | None
     date: date
-    dealer_id: int | None
 
     class Config:
         json_encoders = {date: lambda v: v.strftime("%d.%m.%Y")}
@@ -20,6 +31,6 @@ class DealerPrice(DealerPriceBase):
     model_config = ConfigDict(from_attributes=True)
 
 
-class Dealer(BaseModel):
-    id: int
-    name: str
+class DealerPriceView(DealerPrice):
+    dealer: Dealer
+    productdealer: ProductDealerPrice | None

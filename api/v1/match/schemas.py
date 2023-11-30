@@ -3,7 +3,7 @@ from datetime import datetime
 from pydantic import BaseModel, conint
 
 from api.v1.dealers.schemas import DealerPrice
-from api.v1.products.schemas import Product
+from api.v1.products.schemas import ProductSmall
 
 
 class ProductDealerKey(BaseModel):
@@ -12,7 +12,7 @@ class ProductDealerKey(BaseModel):
 
 
 class ProductDealer(BaseModel):
-    product: Product | None
+    product: ProductSmall | None
     dealerprice: DealerPrice
     created_at: datetime
     status: bool | None
