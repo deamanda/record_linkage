@@ -2,7 +2,6 @@ import asyncio
 import httpx
 import pytest
 import pytest_asyncio
-from asgi_lifespan import LifespanManager
 import core.config as conf
 from core.config import Settings
 
@@ -34,7 +33,6 @@ def event_loop():
 
 @pytest_asyncio.fixture
 async def test_client():
-    async with LifespanManager(app): 
-        async with httpx.AsyncClient(
-            app=app, base_url='http://test/api/v1/') as test_client:
+    async with httpx.AsyncClient(
+        app=app, base_url='http://test/api/v1/') as test_client:
             yield test_client
