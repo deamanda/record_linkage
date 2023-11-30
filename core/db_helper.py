@@ -1,5 +1,6 @@
 from asyncio import current_task
 
+from fastapi_users_db_sqlalchemy import SQLAlchemyUserDatabase
 from sqlalchemy.ext.asyncio import (
     AsyncSession,
     create_async_engine,
@@ -7,6 +8,7 @@ from sqlalchemy.ext.asyncio import (
     async_scoped_session,
 )
 
+from models.users import User
 from .config import settings
 
 
@@ -39,6 +41,10 @@ class DatabaseHelper:
         session = self.get_scoped_session()
         yield session
         await session.close()
+
+    async def get_user_db(self) -> AsyncSession:
+        async with self.session_factory() as session:
+            yield SQLAlchemyUserDatabase(session, User)
 
 
 db_helper = DatabaseHelper(

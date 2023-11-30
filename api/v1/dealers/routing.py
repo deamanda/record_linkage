@@ -13,13 +13,15 @@ from api.v1.dealers.schemas import (
 )
 from core.db_helper import db_helper
 from fastapi_pagination import LimitOffsetPage, paginate
+
 from services.import_csv.dealers import imports_dealerprice, imports_dealers
 
 router = APIRouter(prefix="/dealers", tags=["Товары дилера"])
 
 
 @router.post(
-    "/import-csv/dealerprices", summary="Импорт данных дилеров из CSV"
+    "/import-csv/dealerprices",
+    summary="Импорт данных дилеров из CSV",
 )
 async def imports_dealer_prices_csv(
     file: UploadFile = File(...),

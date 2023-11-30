@@ -3,7 +3,6 @@ from typing import TYPE_CHECKING
 from sqlalchemy import (
     Integer,
     ForeignKey,
-    Column,
     UniqueConstraint,
     select,
     event,
@@ -11,7 +10,7 @@ from sqlalchemy import (
     func,
     Boolean,
 )
-from sqlalchemy.orm import Mapped, relationship
+from sqlalchemy.orm import Mapped, relationship, mapped_column
 
 from models import Base
 
@@ -22,13 +21,15 @@ if TYPE_CHECKING:
 
 
 class ProductDealer(Base):
-    key: Mapped[int] = Column(
+    key: Mapped[int] = mapped_column(
         Integer, ForeignKey("dealerprices.id"), unique=True
     )
-    product_id: Mapped[int | None] = Column(Integer, ForeignKey("products.id"))
-    dealer_id: Mapped[int] = Column(Integer, ForeignKey("dealers.id"))
-    created_at: Mapped[datetime] = Column(DateTime, default=func.now())
-    status: Mapped[bool | None] = Column(Boolean())
+    product_id: Mapped[int | None] = mapped_column(
+        Integer, ForeignKey("products.id")
+    )
+    dealer_id: Mapped[int] = mapped_column(Integer, ForeignKey("dealers.id"))
+    created_at: Mapped[datetime] = mapped_column(DateTime, default=func.now())
+    status: Mapped[bool | None] = mapped_column(Boolean())
     dealerprice: Mapped["DealerPrice"] = relationship(
         back_populates="productdealer"
     )
