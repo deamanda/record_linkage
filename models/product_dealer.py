@@ -22,13 +22,13 @@ if TYPE_CHECKING:
 
 
 class ProductDealer(Base):
-    __tablename__ = "productdealerkey"
-
-    key: Mapped[int] = Column(Integer, ForeignKey("dealerprices.id"))
-    product_id: Mapped[int] = Column(Integer, ForeignKey("products.id"))
+    key: Mapped[int] = Column(
+        Integer, ForeignKey("dealerprices.id"), unique=True
+    )
+    product_id: Mapped[int | None] = Column(Integer, ForeignKey("products.id"))
     dealer_id: Mapped[int] = Column(Integer, ForeignKey("dealers.id"))
     created_at: Mapped[datetime] = Column(DateTime, default=func.now())
-    status: Mapped[bool] = Column(Boolean())
+    status: Mapped[bool | None] = Column(Boolean())
     dealerprice: Mapped["DealerPrice"] = relationship(
         back_populates="productdealer"
     )

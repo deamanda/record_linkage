@@ -12,10 +12,23 @@ class ProductDealerKey(BaseModel):
 
 
 class ProductDealer(BaseModel):
-    product: Product
+    product: Product | None
     dealerprice: DealerPrice
     created_at: datetime
-    status: bool
+    status: bool | None
+
+    class Config:
+        json_encoders = {datetime: lambda v: v.strftime("%d.%m.%Y %H:%M:%S")}
+
+
+class ProductDealerKeyNone(BaseModel):
+    key: conint(gt=0)
+
+
+class ProductDealerNone(BaseModel):
+    dealerprice: DealerPrice
+    created_at: datetime
+    status: bool | None
 
     class Config:
         json_encoders = {datetime: lambda v: v.strftime("%d.%m.%Y %H:%M:%S")}

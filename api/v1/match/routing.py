@@ -10,8 +10,13 @@ from api.v1.match.repositories import (
     post_mapped,
     get_matcheds,
     post_not_mapped,
+    post_mapped_later,
 )
-from api.v1.match.schemas import ProductDealerKey, ProductDealer
+from api.v1.match.schemas import (
+    ProductDealerKey,
+    ProductDealer,
+    ProductDealerKeyNone,
+)
 from api.v1.products.depends import product_by_id
 from api.v1.products.schemas import Product
 from core.db_helper import db_helper
@@ -53,10 +58,22 @@ async def post_mapped_products(
     response_model=dict,
 )
 async def post_not_mapped_products(
-    mapped_in: ProductDealerKey,
+    mapped_in: ProductDealerKeyNone,
     session: AsyncSession = Depends(db_helper.scoped_session_dependency),
 ):
     return await post_not_mapped(session=session, mapped_in=mapped_in)
+
+
+@router.post(
+    "/accepted-later",
+    summary="Сопоставить товары (отложить)",
+    response_model=dict,
+)
+async def post_mapped_products_later(
+    mapped_in: ProductDealerKeyNone,
+    session: AsyncSession = Depends(db_helper.scoped_session_dependency),
+):
+    return await post_mapped_later(session=session, mapped_in=mapped_in)
 
 
 @router.get(

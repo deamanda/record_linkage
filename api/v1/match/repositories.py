@@ -4,8 +4,8 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import joinedload
 
 
-from api.v1.match.depends import matching
-from api.v1.match.schemas import ProductDealerKey
+from api.v1.match.depends import matching, not_matching, matching_later
+from api.v1.match.schemas import ProductDealerKey, ProductDealerKeyNone
 from models.products import Product
 from models.product_dealer import ProductDealer
 
@@ -22,21 +22,32 @@ async def get_mapped(session: AsyncSession, products_id) -> list[Product]:
 async def post_mapped(session: AsyncSession, mapped_in: ProductDealerKey):
     await matching(
         session=session,
-        match_status_1=True,
-        match_status_2=False,
+        match_status=True,
         mapped_in=mapped_in,
     )
     return {"detail": "Match found."}
 
 
-async def post_not_mapped(session: AsyncSession, mapped_in: ProductDealerKey):
-    await matching(
+async def post_not_mapped(
+    session: AsyncSession, mapped_in: ProductDealerKeyNone
+):
+    await not_matching(
         session=session,
-        match_status_1=False,
-        match_status_2=True,
+        match_status=False,
         mapped_in=mapped_in,
     )
     return {"detail": "No match found."}
+
+
+async def post_mapped_later(
+    session: AsyncSession, mapped_in: ProductDealerKeyNone
+):
+    await matching_later(
+        session=session,
+        match_status=None,
+        mapped_in=mapped_in,
+    )
+    return {"detail": "Match later."}
 
 
 async def get_matcheds(session: AsyncSession):
