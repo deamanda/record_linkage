@@ -14,6 +14,7 @@ async def get_products(
     )
     result = await session.execute(stmt)
     all_products = result.scalars().all()
+    await session.close()
     return all_products
 
 

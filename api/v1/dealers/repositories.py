@@ -47,6 +47,7 @@ async def get_dealerprices(
 
     result = await session.execute(query)
     all_dealerprices = result.scalars().all()
+    await session.close()
     return all_dealerprices
 
 
@@ -65,6 +66,7 @@ async def get_dealerprice(
     )
     result = await session.execute(stmt)
     dealerprice = result.scalar()
+    await session.close()
     return dealerprice
 
 
@@ -72,4 +74,5 @@ async def get_dealers(session: AsyncSession) -> Sequence[Dealer]:
     stmt = select(Dealer).order_by(Dealer.id)
     result = await session.execute(stmt)
     all_dealers = result.scalars().all()
+    await session.close()
     return all_dealers

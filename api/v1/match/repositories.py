@@ -76,4 +76,5 @@ async def get_matcheds(
 
     result = await session.execute(stmt)
     all_products = result.scalars().all()
+    await session.close()
     return all_products

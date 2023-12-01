@@ -16,7 +16,7 @@ class Dealer(BaseModel):
 
 class DealerPriceBase(BaseModel):
     id: int
-    product_key: int | None
+    product_key: int | str | None
     price: float | None
     product_url: AnyUrl | None
     product_name: str | None
