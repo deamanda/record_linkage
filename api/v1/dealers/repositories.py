@@ -1,6 +1,6 @@
 from typing import Sequence
 
-from sqlalchemy import or_
+from sqlalchemy import or_, desc
 from sqlalchemy.future import select
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import joinedload
@@ -18,7 +18,7 @@ async def get_dealerprices(
     sort_by_date: bool,
     status: str,
     search_query: str,
-    price: bool,
+    sort_by_price: bool,
 ) -> Sequence[DealerPrice]:
     query = (
         select(DealerPrice)
@@ -35,8 +35,15 @@ async def get_dealerprices(
             if search_query
             else True,
         )
-        .order_by()
     )
+    if sort_by_price is True:
+        query = query.order_by(desc(DealerPrice.price))
+    elif sort_by_price is False:
+        query = query.order_by(DealerPrice.price)
+    elif sort_by_date is False:
+        query = query.order_by(DealerPrice.date)
+    else:
+        query = query.order_by(desc(DealerPrice.date))
 
     result = await session.execute(query)
     all_dealerprices = result.scalars().all()

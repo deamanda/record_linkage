@@ -63,7 +63,7 @@ async def get_all_dealer_price(
         default=None, description="Matching status"
     ),
     sort_by_date: bool = Query(default=None, description="Sort by date"),
-    price: bool = Query(default=None, description="Sort by price"),
+    sort_by_price: bool = Query(default=None, description="Sort by price"),
     session: AsyncSession = Depends(db_helper.scoped_session_dependency),
 ):
     value = await get_dealerprices(
@@ -71,7 +71,7 @@ async def get_all_dealer_price(
         sort_by_date=sort_by_date,
         status=status,
         search_query=search_query,
-        price=price,
+        sort_by_price=sort_by_price,
     )
     return paginate(value)
 

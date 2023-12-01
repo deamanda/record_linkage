@@ -6,6 +6,7 @@ from sqlalchemy.orm import joinedload
 
 from api.v1.match.depends import matching, not_matching, matching_later
 from api.v1.match.schemas import ProductDealerKey, ProductDealerKeyNone
+from models import DealerPrice
 from models.products import Product
 from models.product_dealer import ProductDealer
 
@@ -50,14 +51,22 @@ async def post_mapped_later(
     return {"detail": "Match later."}
 
 
-async def get_matcheds(session: AsyncSession, sort_by_time: bool, status: str):
+async def get_matcheds(
+    session: AsyncSession, sort_by_time: bool, status: str, search_query: str
+):
     stmt = (
         select(ProductDealer)
         .options(
             joinedload(ProductDealer.product),
             joinedload(ProductDealer.dealerprice),
         )
-        .filter(or_(ProductDealer.status == status, status is None))
+        .outerjoin(DealerPrice, ProductDealer.key == DealerPrice.id)
+        .filter(
+            or_(ProductDealer.status == status, status is None),
+            DealerPrice.product_name.ilike(f"%{search_query}%")
+            if search_query
+            else True,
+        )
         .order_by(
             desc(ProductDealer.created_at)
             if sort_by_time

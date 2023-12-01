@@ -84,13 +84,17 @@ async def post_mapped_products_later(
     response_model=LimitOffsetPage[ProductDealer],
 )
 async def get_matched(
+    search_query: str = Query(default=None, description="Search"),
     status: MatchingStatus = Query(
         default=None, description="Matching status"
     ),
-    sort_by_time: bool = Query(default=True, description="Sort by time"),
+    sort_by_time: bool = Query(default=None, description="Sort by time"),
     session: AsyncSession = Depends(db_helper.scoped_session_dependency),
 ):
     value = await get_matcheds(
-        session=session, sort_by_time=sort_by_time, status=status
+        session=session,
+        sort_by_time=sort_by_time,
+        status=status,
+        search_query=search_query,
     )
     return paginate(value)
