@@ -1,5 +1,8 @@
 name: prosept-workflows
-on: [push]
+on: 
+  push:
+    branches:
+      - feature/tests
 
 jobs:
 
