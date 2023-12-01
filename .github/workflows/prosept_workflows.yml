@@ -1,0 +1,23 @@
+name: proset-workflows
+
+on:
+  push:
+    branches: [ feature/tests ]
+
+runs-on: ubuntu-latest
+
+steps:
+  - uses: actions/checkout@v2
+  - name: install python
+    uses: actions/setup-python@v2
+    with:
+      python-version: 3.11
+
+  - name: install poetry & dependencies
+    run: | 
+      python -m pip install --upgrade pip 
+      pip install poetry
+      poetry install 
+  - name: run tests
+    run: |
+      poetry run pytest

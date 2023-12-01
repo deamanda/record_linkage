@@ -32,5 +32,5 @@ build-backend = "poetry.core.masonry.api"
 
 [tool.pytest.ini_options]
 testpaths = "tests"
-python_files = "test*.py"
+python_files = "test_*.py"
 filterwarnings = "ignore::DeprecationWarning"

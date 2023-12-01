@@ -14,13 +14,11 @@ async def test_post_products(test_client):
         assert response.status_code == status.HTTP_200_OK
 
 
-async def test_get_products(test_client):
+async def test_get_products(test_client, test_product):
     response = await test_client.get('products')
-
     assert response.status_code == status.HTTP_200_OK
 
 
-async def test_get_dealers_price(test_client):
-    response = await test_client.get('dealers/price/')
-
+async def test_get_product(test_client, test_product):
+    response = await test_client.get('products/1/')
     assert response.status_code == status.HTTP_200_OK
