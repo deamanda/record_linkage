@@ -5,7 +5,7 @@ from api.v1.products.schemas import ProductSmall
 
 
 class ProductDealerPrice(BaseModel):
-    status: bool | None
+    status: str | None
     product: ProductSmall | None
 
 

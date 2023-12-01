@@ -7,56 +7,12 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from api.v1.match.schemas import ProductDealerKey, ProductDealerKeyNone
 from models import DealerPrice
-from models.products import Product
 from models.product_dealer import ProductDealer
-
-
-async def product_validate(
-    mapped_in,
-    session: AsyncSession = Depends(db_helper.scoped_session_dependency),
-):
-    product = select(Product).where(Product.id == mapped_in.product_id)
-    result_product = await session.execute(product)
-    if not result_product.scalar():
-        await session.close()
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail=f"Product with product_id={mapped_in.product_id} not found.",
-        )
-
-
-async def dealer_price_validate(
-    mapped_in,
-    session: AsyncSession = Depends(db_helper.scoped_session_dependency),
-):
-    dealer_price = select(DealerPrice).where(DealerPrice.id == mapped_in.key)
-    result = await session.execute(dealer_price)
-    if not result.scalar():
-        await session.close()
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail=f"Dealer price with key={mapped_in.key} not found.",
-        )
-
-
-async def pre_dealer_price_validate(
-    mapped_in,
-    session: AsyncSession = Depends(db_helper.scoped_session_dependency),
-):
-    dealer_price = select(ProductDealer).where(
-        ProductDealer.key == mapped_in.key
-    )
-    result = await session.execute(dealer_price)
-    if result.scalar():
-        await session.close()
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail="Item has already been matched!",
-        )
+from services.validators import product_validate, dealer_price_validate
 
 
 async def matching(
-    match_status: bool,
+    match_status: str,
     mapped_in: ProductDealerKey,
     session: AsyncSession = Depends(db_helper.scoped_session_dependency),
 ):
@@ -66,7 +22,7 @@ async def matching(
             ProductDealer.key == mapped_in.key,
             ProductDealer.product_id == mapped_in.product_id,
             ProductDealer.dealer_id == dealer_id.dealer_id,
-            ProductDealer.status == True,
+            ProductDealer.status == match_status,
         )
     )
     result = await session.execute(dealer_price)
@@ -110,7 +66,7 @@ async def matching(
 
 
 async def not_matching(
-    match_status: bool,
+    match_status: str,
     mapped_in: ProductDealerKeyNone,
     session: AsyncSession = Depends(db_helper.scoped_session_dependency),
 ):
@@ -120,7 +76,7 @@ async def not_matching(
             ProductDealer.key == mapped_in.key,
             ProductDealer.product_id == None,
             ProductDealer.dealer_id == dealer_id.dealer_id,
-            ProductDealer.status == False,
+            ProductDealer.status == match_status,
         )
     )
     result = await session.execute(dealer_price)
@@ -163,7 +119,7 @@ async def not_matching(
 
 
 async def matching_later(
-    match_status: None,
+    match_status: str,
     mapped_in: ProductDealerKeyNone,
     session: AsyncSession = Depends(db_helper.scoped_session_dependency),
 ):
@@ -173,7 +129,7 @@ async def matching_later(
             ProductDealer.key == mapped_in.key,
             ProductDealer.product_id == None,
             ProductDealer.dealer_id == dealer_id.dealer_id,
-            ProductDealer.status == None,
+            ProductDealer.status == match_status,
         )
     )
     result = await session.execute(dealer_price)
@@ -199,7 +155,7 @@ async def matching_later(
                     ProductDealer.id == dealer_price_result_another.id,
                 )
                 .values(
-                    status=None,
+                    status=match_status,
                     created_at=func.now(),
                     product_id=None,
                 )

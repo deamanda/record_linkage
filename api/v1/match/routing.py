@@ -22,6 +22,8 @@ from api.v1.products.schemas import Product
 from core.db_helper import db_helper
 from fastapi import Query
 
+from services.validators import MatchingStatus
+
 router = APIRouter(prefix="/matching", tags=["Сопоставление"])
 
 
@@ -82,7 +84,13 @@ async def post_mapped_products_later(
     response_model=LimitOffsetPage[ProductDealer],
 )
 async def get_matched(
+    status: MatchingStatus = Query(
+        default=None, description="Matching status"
+    ),
+    sort_by_time: bool = Query(default=True, description="Sort by time"),
     session: AsyncSession = Depends(db_helper.scoped_session_dependency),
 ):
-    value = await get_matcheds(session=session)
+    value = await get_matcheds(
+        session=session, sort_by_time=sort_by_time, status=status
+    )
     return paginate(value)

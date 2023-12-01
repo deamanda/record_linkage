@@ -1,5 +1,6 @@
 from typing import Sequence
 
+from sqlalchemy import or_
 from sqlalchemy.future import select
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import joinedload
@@ -12,8 +13,14 @@ async def get_dealer(session: AsyncSession, dealerprice) -> Dealer | None:
     return await session.get(Dealer, dealerprice.dealer_id)
 
 
-async def get_dealerprices(session: AsyncSession) -> Sequence[DealerPrice]:
-    stmt = (
+async def get_dealerprices(
+    session: AsyncSession,
+    sort_by_date: bool,
+    status: str,
+    search_query: str,
+    price: bool,
+) -> Sequence[DealerPrice]:
+    query = (
         select(DealerPrice)
         .options(
             joinedload(DealerPrice.dealer),
@@ -21,9 +28,17 @@ async def get_dealerprices(session: AsyncSession) -> Sequence[DealerPrice]:
                 ProductDealer.product
             ),
         )
-        .order_by(DealerPrice.id)
+        .outerjoin(ProductDealer, ProductDealer.key == DealerPrice.id)
+        .filter(
+            or_(ProductDealer.status == status, status is None),
+            DealerPrice.product_name.ilike(f"%{search_query}%")
+            if search_query
+            else True,
+        )
+        .order_by()
     )
-    result = await session.execute(stmt)
+
+    result = await session.execute(query)
     all_dealerprices = result.scalars().all()
     return all_dealerprices
 

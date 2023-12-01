@@ -1,4 +1,4 @@
-from sqlalchemy import desc
+from sqlalchemy import desc, or_
 from sqlalchemy.future import select
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import joinedload
@@ -22,7 +22,7 @@ async def get_mapped(session: AsyncSession, products_id) -> list[Product]:
 async def post_mapped(session: AsyncSession, mapped_in: ProductDealerKey):
     await matching(
         session=session,
-        match_status=True,
+        match_status="matched",
         mapped_in=mapped_in,
     )
     return {"detail": "Match found."}
@@ -33,7 +33,7 @@ async def post_not_mapped(
 ):
     await not_matching(
         session=session,
-        match_status=False,
+        match_status="not matched",
         mapped_in=mapped_in,
     )
     return {"detail": "No match found."}
@@ -44,20 +44,25 @@ async def post_mapped_later(
 ):
     await matching_later(
         session=session,
-        match_status=None,
+        match_status="deferred",
         mapped_in=mapped_in,
     )
     return {"detail": "Match later."}
 
 
-async def get_matcheds(session: AsyncSession):
+async def get_matcheds(session: AsyncSession, sort_by_time: bool, status: str):
     stmt = (
         select(ProductDealer)
         .options(
             joinedload(ProductDealer.product),
             joinedload(ProductDealer.dealerprice),
         )
-        .order_by(desc(ProductDealer.created_at))
+        .filter(or_(ProductDealer.status == status, status is None))
+        .order_by(
+            desc(ProductDealer.created_at)
+            if sort_by_time
+            else ProductDealer.created_at
+        )
     )
 
     result = await session.execute(stmt)

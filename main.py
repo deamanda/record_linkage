@@ -3,7 +3,7 @@ from fastapi import FastAPI, Depends
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi_pagination import add_pagination
 
-from api.users.schemas import UserRead, UserCreate
+from api.v1.users.schemas import UserRead, UserCreate
 from core.auth import auth_backend, fastapi_users, current_user
 from core.config import settings
 from api.v1 import router as router_v1

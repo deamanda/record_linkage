@@ -1,5 +1,5 @@
 from sqlalchemy.ext.asyncio import AsyncSession
-from fastapi import APIRouter, Depends, UploadFile, File
+from fastapi import APIRouter, Depends, UploadFile, File, Query
 
 from api.v1.products.depends import product_by_id
 from api.v1.products.repositories import get_products
@@ -36,7 +36,8 @@ async def imports_product_csv(
     summary="Получить все товары заказчика",
 )
 async def get_all_products(
+    search_query: str = Query(default=None, description="Search"),
     session: AsyncSession = Depends(db_helper.scoped_session_dependency),
 ):
-    value = await get_products(session=session)
+    value = await get_products(session=session, search_query=search_query)
     return paginate(value)
