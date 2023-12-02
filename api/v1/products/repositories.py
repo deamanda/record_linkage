@@ -4,16 +4,18 @@ from sqlalchemy.future import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from models.products import Product
-from services.pagination import pagination
 
 
 async def get_products(
-    session: AsyncSession, page: int, size: int
-) -> dict[str, Sequence[Product] | dict[str, int]]:
-    stmt = select(Product).order_by(Product.id)
+    session: AsyncSession, search_query: str
+) -> Sequence[Product]:
+    stmt = select(Product).filter(
+        Product.name.ilike(f"%{search_query}%") if search_query else True,
+    )
     result = await session.execute(stmt)
     all_products = result.scalars().all()
-    return pagination(page, size, all_products)
+    await session.close()
+    return all_products
 
 
 async def get_product(

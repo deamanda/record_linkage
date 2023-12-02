@@ -18,7 +18,6 @@ async def imports_product(file, session):
 
             try:
                 (
-                    id,
                     article,
                     ean_13,
                     name,
@@ -32,9 +31,8 @@ async def imports_product(file, session):
                     wb_article,
                     ym_article,
                     wb_article_td,
-                ) = row[1:]
+                ) = row[2:]
                 product_data = {
-                    "id": int(id),
                     "article": article if article else None,
                     "ean_13": int(float(ean_13)) if ean_13 else None,
                     "name": name if name else None,
