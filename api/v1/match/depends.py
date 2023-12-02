@@ -6,7 +6,7 @@ from sqlalchemy.future import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from api.v1.match.schemas import ProductDealerKey, ProductDealerKeyNone
-from models import DealerPrice
+from models import DealerPrice, User
 from models.product_dealer import ProductDealer
 from services.validators import product_validate, dealer_price_validate
 
@@ -14,8 +14,10 @@ from services.validators import product_validate, dealer_price_validate
 async def matching(
     match_status: str,
     mapped_in: ProductDealerKey,
+    user: User,
     session: AsyncSession = Depends(db_helper.scoped_session_dependency),
 ):
+    user_local = await session.merge(user)
     dealer_id = await session.get(DealerPrice, mapped_in.key)
     dealer_price = select(ProductDealer).where(
         and_(
@@ -58,7 +60,9 @@ async def matching(
             await product_validate(mapped_in=mapped_in, session=session)
             await dealer_price_validate(mapped_in=mapped_in, session=session)
             mapped = ProductDealer(
-                **mapped_in.model_dump(), status=match_status
+                **mapped_in.model_dump(),
+                status=match_status,
+                user=user_local,
             )
             session.add(mapped)
     await session.commit()
@@ -68,8 +72,10 @@ async def matching(
 async def not_matching(
     match_status: str,
     mapped_in: ProductDealerKeyNone,
+    user: User,
     session: AsyncSession = Depends(db_helper.scoped_session_dependency),
 ):
+    user_local = await session.merge(user)
     dealer_id = await session.get(DealerPrice, mapped_in.key)
     dealer_price = select(ProductDealer).where(
         and_(
@@ -111,7 +117,7 @@ async def not_matching(
         else:
             await dealer_price_validate(mapped_in=mapped_in, session=session)
             mapped = ProductDealer(
-                **mapped_in.model_dump(), status=match_status
+                **mapped_in.model_dump(), status=match_status, user=user_local
             )
             session.add(mapped)
     await session.commit()
@@ -121,8 +127,10 @@ async def not_matching(
 async def matching_later(
     match_status: str,
     mapped_in: ProductDealerKeyNone,
+    user: User,
     session: AsyncSession = Depends(db_helper.scoped_session_dependency),
 ):
+    user_local = await session.merge(user)
     dealer_id = await session.get(DealerPrice, mapped_in.key)
     dealer_price = select(ProductDealer).where(
         and_(
@@ -164,7 +172,7 @@ async def matching_later(
         else:
             await dealer_price_validate(mapped_in=mapped_in, session=session)
             mapped = ProductDealer(
-                **mapped_in.model_dump(), status=match_status
+                **mapped_in.model_dump(), status=match_status, user=user_local
             )
             session.add(mapped)
     await session.commit()

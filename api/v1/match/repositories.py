@@ -6,7 +6,7 @@ from sqlalchemy.orm import joinedload
 
 from api.v1.match.depends import matching, not_matching, matching_later
 from api.v1.match.schemas import ProductDealerKey, ProductDealerKeyNone
-from models import DealerPrice
+from models import DealerPrice, User
 from models.products import Product
 from models.product_dealer import ProductDealer
 
@@ -20,39 +20,50 @@ async def get_mapped(session: AsyncSession, products_id) -> list[Product]:
     return selected_products
 
 
-async def post_mapped(session: AsyncSession, mapped_in: ProductDealerKey):
+async def post_mapped(
+    session: AsyncSession, mapped_in: ProductDealerKey, user: User
+):
     await matching(
-        session=session,
-        match_status="matched",
-        mapped_in=mapped_in,
+        session=session, match_status="matched", mapped_in=mapped_in, user=user
     )
     return {"detail": "Match found."}
 
 
 async def post_not_mapped(
-    session: AsyncSession, mapped_in: ProductDealerKeyNone
+    session: AsyncSession,
+    mapped_in: ProductDealerKeyNone,
+    user: User,
 ):
     await not_matching(
         session=session,
         match_status="not matched",
         mapped_in=mapped_in,
+        user=user,
     )
     return {"detail": "No match found."}
 
 
 async def post_mapped_later(
-    session: AsyncSession, mapped_in: ProductDealerKeyNone
+    session: AsyncSession,
+    mapped_in: ProductDealerKeyNone,
+    user: User,
 ):
     await matching_later(
         session=session,
         match_status="deferred",
         mapped_in=mapped_in,
+        user=user,
     )
     return {"detail": "Match later."}
 
 
 async def get_matcheds(
-    session: AsyncSession, sort_by_time: bool, status: str, search_query: str
+    session: AsyncSession,
+    sort_by_time: bool,
+    status: str,
+    search_query: str,
+    user_id: int | None,
+    user: User | None,
 ):
     stmt = (
         select(ProductDealer)
@@ -73,7 +84,11 @@ async def get_matcheds(
             else ProductDealer.created_at
         )
     )
-
+    if user_id:
+        stmt = stmt.filter(ProductDealer.user_id == user_id)
+    elif user:
+        user_local = await session.merge(user)
+        stmt = stmt.filter(ProductDealer.user == user_local)
     result = await session.execute(stmt)
     all_products = result.scalars().all()
     await session.close()

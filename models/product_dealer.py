@@ -19,6 +19,7 @@ from models import Base
 if TYPE_CHECKING:
     from models.dealers import Dealer, DealerPrice
     from models.products import Product
+    from models.users import User
 
 
 class ProductDealer(Base):
@@ -36,6 +37,9 @@ class ProductDealer(Base):
     )
     dealer: Mapped["Dealer"] = relationship(back_populates="productdealer")
     product: Mapped["Product"] = relationship(back_populates="productdealer")
+    user_id: Mapped[int] = mapped_column(ForeignKey("user.id"))
+    user: Mapped["User"] = relationship(back_populates="productdealer")
+
     __table_args__ = (
         UniqueConstraint("key", "product_id", "dealer_id"),
         CheckConstraint(

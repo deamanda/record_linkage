@@ -3,10 +3,11 @@ from fastapi import FastAPI, Depends
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi_pagination import add_pagination
 
-from api.v1.users.schemas import UserRead, UserCreate
+from api.v1.users.schemas import UserRead, UserCreate, UserUpdate
 from core.auth import auth_backend, fastapi_users, current_user
 from core.config import settings
 from api.v1 import router as router_v1
+
 
 app = FastAPI(
     title="Prosept - разметка товаров",
@@ -23,14 +24,19 @@ app.include_router(
 
 app.include_router(
     fastapi_users.get_auth_router(auth_backend),
-    prefix="/auth/jwt",
+    prefix="/api/auth/jwt",
     tags=["Аутентификация"],
 )
 
 app.include_router(
     fastapi_users.get_register_router(UserRead, UserCreate),
-    prefix="/auth",
+    prefix="/api/auth",
     tags=["Аутентификация"],
+)
+app.include_router(
+    fastapi_users.get_users_router(UserRead, UserUpdate),
+    prefix="/api/users",
+    tags=["Пользователь"],
 )
 
 

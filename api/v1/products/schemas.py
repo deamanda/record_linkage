@@ -9,13 +9,8 @@ class ProductSmall(BaseModel):
     cost: float | None
 
 
-class ProductBase(BaseModel):
-    id: int
-    article: str | None
+class ProductBase(ProductSmall):
     ean_13: int | None
-    name: str | None
-    cost: float | None
-    recommended_price: float | None
     category_id: int | None
     ozon_name: str | None
     name_1c: str | None

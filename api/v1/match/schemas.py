@@ -11,20 +11,6 @@ class ProductDealerKey(BaseModel):
     product_id: conint(gt=0)
 
 
-class ProductDealer(BaseModel):
-    product: ProductSmall | None
-    dealerprice: DealerPrice
-    created_at: datetime
-    status: str | None
-
-    class Config:
-        json_encoders = {datetime: lambda v: v.strftime("%d.%m.%Y %H:%M:%S")}
-
-
-class ProductDealerKeyNone(BaseModel):
-    key: conint(gt=0)
-
-
 class ProductDealerNone(BaseModel):
     dealerprice: DealerPrice
     created_at: datetime
@@ -32,3 +18,11 @@ class ProductDealerNone(BaseModel):
 
     class Config:
         json_encoders = {datetime: lambda v: v.strftime("%d.%m.%Y %H:%M:%S")}
+
+
+class ProductDealer(ProductDealerNone):
+    product: ProductSmall | None
+
+
+class ProductDealerKeyNone(BaseModel):
+    key: conint(gt=0)

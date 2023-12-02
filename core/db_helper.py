@@ -45,6 +45,7 @@ class DatabaseHelper:
     async def get_user_db(self) -> AsyncSession:
         async with self.session_factory() as session:
             yield SQLAlchemyUserDatabase(session, User)
+        await session.close()
 
 
 db_helper = DatabaseHelper(

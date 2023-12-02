@@ -1,8 +1,8 @@
 """Migration name
 
-Revision ID: 3153027bc8cd
+Revision ID: 236050fe8c30
 Revises: 
-Create Date: 2023-12-01 18:38:50.483351
+Create Date: 2023-12-02 19:56:17.819803
 
 """
 from typing import Sequence, Union
@@ -12,7 +12,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision: str = "3153027bc8cd"
+revision: str = "236050fe8c30"
 down_revision: Union[str, None] = None
 branch_labels: Union[str, Sequence[str], None] = None
 depends_on: Union[str, Sequence[str], None] = None
@@ -58,6 +58,7 @@ def upgrade() -> None:
         sa.Column("is_verified", sa.Boolean(), nullable=False),
         sa.Column("id", sa.Integer(), nullable=False),
         sa.PrimaryKeyConstraint("id"),
+        sa.UniqueConstraint("username"),
     )
     op.create_index(op.f("ix_user_id"), "user", ["id"], unique=False)
     op.create_table(
@@ -85,6 +86,7 @@ def upgrade() -> None:
         sa.Column("dealer_id", sa.Integer(), nullable=False),
         sa.Column("created_at", sa.DateTime(), nullable=False),
         sa.Column("status", sa.String(), nullable=True),
+        sa.Column("user_id", sa.Integer(), nullable=False),
         sa.Column("id", sa.Integer(), nullable=False),
         sa.CheckConstraint(
             "status IN ('matched', 'not matched', 'deferred')",
@@ -101,6 +103,10 @@ def upgrade() -> None:
         sa.ForeignKeyConstraint(
             ["product_id"],
             ["products.id"],
+        ),
+        sa.ForeignKeyConstraint(
+            ["user_id"],
+            ["user.id"],
         ),
         sa.PrimaryKeyConstraint("id"),
         sa.UniqueConstraint("key"),
