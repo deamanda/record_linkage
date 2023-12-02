@@ -21,10 +21,15 @@ async def get_mapped(session: AsyncSession, products_id) -> list[Product]:
 
 
 async def post_mapped(
-    session: AsyncSession, mapped_in: ProductDealerKey, user: User
+    session: AsyncSession,
+    mapped_in: ProductDealerKey,
+    user: User,
 ):
     await matching(
-        session=session, match_status="matched", mapped_in=mapped_in, user=user
+        session=session,
+        match_status="matched",
+        mapped_in=mapped_in,
+        user=user,
     )
     return {"detail": "Match found."}
 
@@ -59,11 +64,12 @@ async def post_mapped_later(
 
 async def get_matcheds(
     session: AsyncSession,
-    sort_by_time: bool,
-    status: str,
-    search_query: str,
-    user_id: int | None,
-    user: User | None,
+    sort_by_time: bool | None,
+    status: str | None,
+    search_query: str | None,
+    user_id: int | None = None,
+    user: User | None = None,
+    dealer_id: int | None = None,
 ):
     stmt = (
         select(ProductDealer)
@@ -84,11 +90,15 @@ async def get_matcheds(
             else ProductDealer.created_at
         )
     )
+
     if user_id:
         stmt = stmt.filter(ProductDealer.user_id == user_id)
     elif user:
         user_local = await session.merge(user)
         stmt = stmt.filter(ProductDealer.user == user_local)
+    elif dealer_id:
+        stmt = stmt.filter(ProductDealer.dealer_id == dealer_id)
+
     result = await session.execute(stmt)
     all_products = result.scalars().all()
     await session.close()

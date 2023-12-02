@@ -20,6 +20,6 @@ async def dealerprice_by_id(
     if dealerprice is None:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
-            detail=f"Товар дилера с id = {dealerprice_id} не найден.",
+            detail=f"Dealer product with id = {dealerprice_id} not found.",
         )
     return dealerprice

@@ -30,5 +30,5 @@ class User(SQLAlchemyBaseUserTable[int], Base):
         Boolean, default=False, nullable=False
     )
     productdealer: Mapped[list["ProductDealer"]] = relationship(
-        back_populates="user"
+        back_populates="user", cascade="all, delete-orphan"
     )

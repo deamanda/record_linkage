@@ -39,6 +39,23 @@ async def dealer_price_validate(
         )
 
 
+async def validate_availability_check(
+    model,
+    value: int,
+    session: AsyncSession,
+    message: str,
+):
+    data = select(model).where(model.id == value)
+    results = await session.execute(data)
+    result = results.scalar()
+    if not result:
+        await session.close()
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail=f"{message} with id={value} not found.",
+        )
+
+
 async def pre_dealer_price_validate(
     mapped_in,
     session: AsyncSession = Depends(db_helper.scoped_session_dependency),
