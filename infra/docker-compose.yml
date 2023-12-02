@@ -5,7 +5,7 @@ services:
     restart: always
     container_name: db
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready", "-d", "db_prod"]
+      test: ["CMD-SHELL", "pg_isready -d $${POSGRES_DB} -U $${POSTGRES_USER}"]
       interval: 30s
       timeout: 60s
       retries: 5
@@ -25,12 +25,13 @@ services:
       - db
     env_file:
       - .env
+  
   nginx:
     image: nginx:1.19.3
     ports:
       - "80:80"
     volumes:
-      - nginx.conf:/etc/nginx/conf.d/default.conf
+      - ./nginx.conf:/etc/nginx/conf.d/default.conf
     depends_on:
       - backend 
                                                                                                                                              
