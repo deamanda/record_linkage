@@ -3,7 +3,7 @@ import httpx
 import pytest
 import pytest_asyncio
 import core.config as conf
-from core.config import Settings, DB_USER, DB_PASS, DB_HOST, DB_PORT, DB_NAME
+from core.config import Settings, DB_USER, DB_PASS, DB_HOST, DB_PORT, DB_NAME_TEST
 from models import Dealer, DealerPrice, Product
 from datetime import datetime
 from .utils import data_to_model
