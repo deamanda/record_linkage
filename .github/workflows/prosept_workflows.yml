@@ -10,9 +10,11 @@ jobs:
       postgres:
         image: postgres
         env:
-          POSTGRES_DB: postgres
-          POSTGRES_USER: postgres
-          POSTGRES_PASSWORD: postgres
+          DB_HOST: ${{ secrets.DB_HOST }}
+          POSTGRES_DB: ${{ secrets.POSTGRES_DB_TEST }}
+          POSTGRES_USER: ${{ secrets.POSTGRES_USER }}
+          POSTGRES_PASSWORD: ${{ secrets.POSTGRES_USER }}
+          DB_PORT: ${{ secrets.DB_PORT }}
         options: >-
           --health-cmd pg_isready
           --health-interval 10s
@@ -29,11 +31,11 @@ jobs:
     - name: 'Create env file'
       run: |
         touch .env
-        echo DB_HOST=localhost >> .env   
-        echo DB_PORT=5432 >> .env
-        echo POSTGRES_DB_TEST=postgres >> .env
-        echo POSTGRES_USER=postgres >> .env
-        echo POSTGRES_PASSWORD=postgres >> .env
+        echo DB_HOST=${{ secrets.DB_HOST }} >> .env   
+        echo DB_PORT=${{ secrets.DB_PORT }} >> .env
+        echo POSTGRES_DB=${{ secrets.POSTGRES_DB_TEST }} >> .env
+        echo POSTGRES_USER=${{ secrets.POSTGRES_USER }} >> .env
+        echo POSTGRES_PASSWORD=${{ secrets.POSTGRES_PASSWORD }} >> .env
     - name: Install Dependencies
       run: |
         python -m pip install --upgrade pip
