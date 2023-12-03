@@ -7,9 +7,3 @@ async def data_to_model(model, data):
     finally:
         await session.close_all()
     return data
-
-
-async def check_pagination(url, data):
-    expected_keys = ('total', 'limit', 'offset')
-    for expected_key in expected_keys:
-        assert expected_key in data

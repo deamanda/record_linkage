@@ -5,7 +5,30 @@ on:
       - feature/tests
 
 jobs:
-
+  tests:
+    services:
+      db:
+        image: postgres
+        env:
+          POSTGRES_DB: ${{ secrets.POSTGRES_DB_TEST }}
+          POSTGRES_USER: ${{ secrets.POSTGRES_USER }}
+          POSTGRES_PASSWORD: ${{ secrets.POSTGRES_USER }}
+        ports:
+          - 5432:5432
+    steps:
+    - uses: actions/checkout@v2
+    - name: Set up Python
+      uses: actions/setup-python@v2
+      with:
+        python-version: 3.11
+    - name: Install Dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+    - name: Run Tests
+      run: |
+        pytest
+  
   build_and_push_to_docker_hub:
     name: docker
     runs-on: ubuntu-latest
