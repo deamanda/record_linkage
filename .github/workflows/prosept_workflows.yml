@@ -6,7 +6,6 @@ on:
 jobs:
   tests:
     runs-on: ubuntu-latest
-    container-job:
     services:
       db:
         image: postgres
