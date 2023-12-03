@@ -6,10 +6,15 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from models.products import Product
 
 
-async def get_products(session: AsyncSession) -> Sequence[Product]:
-    stmt = select(Product).order_by(Product.id)
+async def get_products(
+    session: AsyncSession, search_query: str
+) -> Sequence[Product]:
+    stmt = select(Product).filter(
+        Product.name.ilike(f"%{search_query}%") if search_query else True,
+    )
     result = await session.execute(stmt)
     all_products = result.scalars().all()
+    await session.close()
     return all_products
 
 

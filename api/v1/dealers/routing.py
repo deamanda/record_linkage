@@ -1,24 +1,28 @@
 from sqlalchemy.ext.asyncio import AsyncSession
-from fastapi import APIRouter, Depends, UploadFile, File
+from fastapi import APIRouter, Depends, UploadFile, File, Query
 
 from api.v1.dealers.depends import dealerprice_by_id
 from api.v1.dealers.repositories import (
     get_dealerprices,
-    get_dealer,
+    get_dealers,
 )
 from api.v1.dealers.schemas import (
     DealerPrice,
     Dealer,
+    DealerPriceView,
 )
 from core.db_helper import db_helper
 from fastapi_pagination import LimitOffsetPage, paginate
+
 from services.import_csv.dealers import imports_dealerprice, imports_dealers
+from services.validators import MatchingStatus
 
 router = APIRouter(prefix="/dealers", tags=["Товары дилера"])
 
 
 @router.post(
-    "/import-csv/dealerprices", summary="Импорт данных дилеров из CSV"
+    "/import-csv/dealerprices",
+    summary="Импорт данных дилеров из CSV",
 )
 async def imports_dealer_prices_csv(
     file: UploadFile = File(...),
@@ -39,7 +43,7 @@ async def imports_dealers_csv(
 
 @router.get(
     "/price/{dealerprice_id}/",
-    response_model=DealerPrice,
+    response_model=DealerPriceView,
     summary="Получить товар дилера",
 )
 async def get_dealer_price(
@@ -50,13 +54,25 @@ async def get_dealer_price(
 
 @router.get(
     "/price",
-    response_model=LimitOffsetPage[DealerPrice],
+    response_model=LimitOffsetPage[DealerPriceView],
     summary="Получить товары дилеров",
 )
 async def get_all_dealer_price(
+    search_query: str = Query(default=None, description="Search"),
+    status: MatchingStatus = Query(
+        default=None, description="Matching status"
+    ),
+    sort_by_date: bool = Query(default=None, description="Sort by date"),
+    sort_by_price: bool = Query(default=None, description="Sort by price"),
     session: AsyncSession = Depends(db_helper.scoped_session_dependency),
 ):
-    value = await get_dealerprices(session=session)
+    value = await get_dealerprices(
+        session=session,
+        sort_by_date=sort_by_date,
+        status=status,
+        search_query=search_query,
+        sort_by_price=sort_by_price,
+    )
     return paginate(value)
 
 
@@ -68,5 +84,5 @@ async def get_all_dealer_price(
 async def get_all_dealers(
     session: AsyncSession = Depends(db_helper.scoped_session_dependency),
 ):
-    value = await get_dealer(session=session)
+    value = await get_dealers(session=session)
     return paginate(value)

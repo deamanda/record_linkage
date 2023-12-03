@@ -17,6 +17,7 @@ pydantic-settings = "^2.1.0"
 python-multipart = "^0.0.6"
 gunicorn = "^21.2.0"
 fastapi-pagination = "^0.12.13"
+fastapi-users = {extras = ["sqlalchemy"], version = "^12.1.2"}
 httpx = "^0.25.2"
 pytest = "^7.4.3"
 pytest-asyncio = "^0.21.1"

@@ -3,7 +3,6 @@ from sqlalchemy import (
     Float,
     ForeignKey,
     Date,
-    Boolean,
 )
 from sqlalchemy.orm import Mapped, relationship
 from sqlalchemy.orm import mapped_column
@@ -39,10 +38,9 @@ class DealerPrice(Base):
     product_url: Mapped[str | None] = mapped_column(String())
     product_name: Mapped[str | None] = mapped_column(String())
     date: Mapped[date | None] = mapped_column(Date())
-    mapped: Mapped[bool | None] = mapped_column(Boolean(), default=None)
     dealer_id: Mapped[int | None] = mapped_column(ForeignKey("dealers.id"))
     dealer: Mapped["Dealer"] = relationship(back_populates="dealerprice")
-    productdealer: Mapped[list["ProductDealer"]] = relationship(
+    productdealer: Mapped["ProductDealer"] = relationship(
         back_populates="dealerprice"
     )
 
