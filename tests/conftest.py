@@ -9,7 +9,7 @@ from datetime import datetime
 from .utils import data_to_model
 
 
-TEST_DB = f"postgresql+asyncpg://{DB_USER}:{DB_PASS}@{DB_HOST}:{DB_PORT}/{DB_NAME}_test"
+TEST_DB = f"postgresql+asyncpg://{DB_USER}:{DB_PASS}@{DB_HOST}:{DB_PORT}/{DB_NAME_TEST}"
 conf.settings = Settings(db_url=TEST_DB)
 
 
