@@ -33,6 +33,7 @@ class ProductDealer(Base):
         DateTime(timezone=True), default=datetime.now()
     )
     status: Mapped[str] = mapped_column(String, nullable=True)
+    position: Mapped[int | None] = mapped_column(Integer)
     dealerprice: Mapped["DealerPrice"] = relationship(
         back_populates="productdealer"
     )

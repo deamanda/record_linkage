@@ -18,6 +18,10 @@ python-multipart = "^0.0.6"
 gunicorn = "^21.2.0"
 fastapi-pagination = "^0.12.13"
 fastapi-users = {extras = ["sqlalchemy"], version = "^12.1.2"}
+numpy = "^1.26.2"
+pandas = "^2.1.3"
+scipy = "^1.11.4"
+sentence-transformers = "^2.2.2"
 
 [tool.poetry.group.dev.dependencies]
 black = "^23.11.0"

@@ -11,6 +11,7 @@ from typing import TYPE_CHECKING
 from models.base import Base
 from datetime import date
 
+from .match import ProductsMapped
 
 if TYPE_CHECKING:
     from .product_dealer import ProductDealer
@@ -41,6 +42,9 @@ class DealerPrice(Base):
     dealer_id: Mapped[int | None] = mapped_column(ForeignKey("dealers.id"))
     dealer: Mapped["Dealer"] = relationship(back_populates="dealerprice")
     productdealer: Mapped["ProductDealer"] = relationship(
+        back_populates="dealerprice"
+    )
+    productsmapped: Mapped["ProductsMapped"] = relationship(
         back_populates="dealerprice"
     )
 

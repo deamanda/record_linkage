@@ -4,6 +4,7 @@ from sqlalchemy.orm import mapped_column
 from typing import TYPE_CHECKING
 
 from models.base import Base
+from models.match import ProductsMapped
 
 if TYPE_CHECKING:
     from models.product_dealer import ProductDealer
@@ -26,6 +27,9 @@ class Product(Base):
     ym_article: Mapped[str | None] = mapped_column(String())
     wb_article_td: Mapped[str | None] = mapped_column(String())
     productdealer: Mapped[list["ProductDealer"]] = relationship(
+        back_populates="product"
+    )
+    productsmapped: Mapped["ProductsMapped"] = relationship(
         back_populates="product"
     )
 
