@@ -10,14 +10,19 @@ services:
       timeout: 60s
       retries: 5
     env_file: .env
-
     volumes:
       - database:/var/lib/postgresql/data/
+
+  frontend:
+    image: kirillkatsnelson/prosept
+    pull_policy: always
+    volumes:
+      - ../frontend/:/app/result_build/
 
   backend:
     container_name: backend
     restart: always
-    image: deamanda/prosept:v1
+    image: deamanda/prosept:latest
     pull_policy: always
     volumes:
       - .:/usr/src/app
@@ -29,10 +34,11 @@ services:
   nginx:
     image: nginx:1.19.3
     ports:
-      - "80:80"
+      - "8001:80"
       - "443:443"
     volumes:
       - ./nginx.conf:/etc/nginx/conf.d/default.conf
+      - ../frontend/build:/usr/share/nginx/html/
       - ./certbot/www:/var/www
       - ./certbot/conf/:/etc/letsencrypt
     depends_on:
