@@ -75,7 +75,9 @@ async def get_matcheds(
         select(ProductDealer)
         .options(
             joinedload(ProductDealer.product),
-            joinedload(ProductDealer.dealerprice),
+            joinedload(ProductDealer.dealerprice).joinedload(
+                DealerPrice.dealer
+            ),
         )
         .outerjoin(DealerPrice, ProductDealer.key == DealerPrice.id)
         .filter(

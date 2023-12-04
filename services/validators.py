@@ -76,3 +76,10 @@ class MatchingStatus(str, Enum):
     option1 = "not matched"
     option2 = "matched"
     option3 = "deferred"
+
+
+class DealerPriceStatus(str, Enum):
+    option1 = "not matched"
+    option2 = "matched"
+    option3 = "deferred"
+    option4 = "not processed"

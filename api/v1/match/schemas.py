@@ -16,9 +16,6 @@ class ProductDealerNone(BaseModel):
     created_at: datetime
     status: str | None
 
-    class Config:
-        json_encoders = {datetime: lambda v: v.strftime("%d.%m.%Y %H:%M:%S")}
-
 
 class ProductDealer(ProductDealerNone):
     product: ProductSmall | None

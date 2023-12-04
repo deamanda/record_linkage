@@ -16,7 +16,7 @@ async def get_dealer(session: AsyncSession, dealerprice) -> Dealer | None:
 async def get_dealerprices(
     session: AsyncSession,
     sort_by_date: bool,
-    status: str,
+    status: str | None,
     search_query: str,
     sort_by_price: bool,
 ) -> Sequence[DealerPrice]:
@@ -30,7 +30,15 @@ async def get_dealerprices(
         )
         .outerjoin(ProductDealer, ProductDealer.key == DealerPrice.id)
         .filter(
-            or_(ProductDealer.status == status, status is None),
+            or_(
+                (ProductDealer.status == status)
+                if status in ["not matched", "matched", "deferred"]
+                else (
+                    ProductDealer.id.is_(None)
+                    if status == "not processed"
+                    else True
+                ),
+            ),
             DealerPrice.product_name.ilike(f"%{search_query}%")
             if search_query
             else True,

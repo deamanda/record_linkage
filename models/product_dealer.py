@@ -7,7 +7,6 @@ from sqlalchemy import (
     select,
     event,
     DateTime,
-    func,
     String,
     CheckConstraint,
 )
@@ -30,7 +29,9 @@ class ProductDealer(Base):
         Integer, ForeignKey("products.id")
     )
     dealer_id: Mapped[int] = mapped_column(Integer, ForeignKey("dealers.id"))
-    created_at: Mapped[datetime] = mapped_column(DateTime, default=func.now())
+    created_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True), default=datetime.now()
+    )
     status: Mapped[str] = mapped_column(String, nullable=True)
     dealerprice: Mapped["DealerPrice"] = relationship(
         back_populates="productdealer"
