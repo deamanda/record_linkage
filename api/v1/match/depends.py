@@ -227,4 +227,5 @@ async def get_matched(
     result = await session.execute(stmt)
     dealerprice = result.scalar()
     market_name = [str(dealerprice.product_name)]
+    await session.close()
     return await match(valuse, market_name, count)
