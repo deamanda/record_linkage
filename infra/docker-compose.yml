@@ -1,0 +1,26 @@
+version: '3.3'
+services:
+  db:
+    image: postgres:12.4
+    restart: always
+    container_name: db
+    volumes:
+      - db_bas:/var/lib/postgresql/data
+    env_file:
+      - .env.example
+
+  backend:
+    container_name: backend
+    restart: always
+    image: valentaine98/prosept:latest
+    ports:
+      - "8001:8001"
+    volumes:
+      - .:/usr/src/app
+    depends_on:
+      - db
+    env_file:
+      - .env.example
+
+volumes:
+  db_bas:
