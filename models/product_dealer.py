@@ -7,7 +7,6 @@ from sqlalchemy import (
     select,
     event,
     DateTime,
-    func,
     String,
     CheckConstraint,
 )
@@ -23,6 +22,8 @@ if TYPE_CHECKING:
 
 
 class ProductDealer(Base):
+    """Matching model"""
+
     key: Mapped[int] = mapped_column(
         Integer, ForeignKey("dealerprices.id"), unique=True
     )
@@ -30,8 +31,11 @@ class ProductDealer(Base):
         Integer, ForeignKey("products.id")
     )
     dealer_id: Mapped[int] = mapped_column(Integer, ForeignKey("dealers.id"))
-    created_at: Mapped[datetime] = mapped_column(DateTime, default=func.now())
+    created_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True), default=datetime.now()
+    )
     status: Mapped[str] = mapped_column(String, nullable=True)
+    position: Mapped[int | None] = mapped_column(Integer)
     dealerprice: Mapped["DealerPrice"] = relationship(
         back_populates="productdealer"
     )
@@ -50,6 +54,7 @@ class ProductDealer(Base):
 
 
 def set_dealer_id_before_insert(mapper, connection, target):
+    """Signal to create a dealer based on the dealer's product"""
     from .dealers import DealerPrice
 
     if target.dealer_id is None and target.key:

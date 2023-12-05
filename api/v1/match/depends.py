@@ -6,9 +6,11 @@ from sqlalchemy.future import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from api.v1.match.schemas import ProductDealerKey, ProductDealerKeyNone
-from models import DealerPrice, User
+from models import DealerPrice, User, ModelVector, Product
+from models.match import ProductsMapped
 from models.product_dealer import ProductDealer
-from services.validators import product_validate, dealer_price_validate
+from services.match import match
+from services.validators import validate_availability_check
 
 
 async def matching(
@@ -17,6 +19,8 @@ async def matching(
     user: User,
     session: AsyncSession = Depends(db_helper.scoped_session_dependency),
 ):
+    """Matching function. If there is no matching,
+    then creates it, if there is, then changes it to “matched”"""
     user_local = await session.merge(user)
     dealer_id = await session.get(DealerPrice, mapped_in.key)
     dealer_price = select(ProductDealer).where(
@@ -36,6 +40,14 @@ async def matching(
             detail="Item has already been matched!",
         )
     else:
+        pos = select(ProductsMapped).where(
+            and_(
+                ProductsMapped.dealerprice_id == mapped_in.key,
+                ProductsMapped.product_id == mapped_in.product_id,
+            )
+        )
+        position = await session.execute(pos)
+        result_position = position.scalar()
         dealer_price_another = select(ProductDealer).where(
             and_(
                 ProductDealer.key == mapped_in.key,
@@ -53,16 +65,23 @@ async def matching(
                     status=match_status,
                     created_at=func.now(),
                     product_id=mapped_in.product_id,
+                    position=result_position.position,
                 )
             )
             await session.execute(new_dealer_price)
         else:
-            await product_validate(mapped_in=mapped_in, session=session)
-            await dealer_price_validate(mapped_in=mapped_in, session=session)
+            await validate_availability_check(
+                Product, mapped_in.product_id, session, "Product"
+            )
+            await validate_availability_check(
+                DealerPrice, mapped_in.key, session, "Dealer Price"
+            )
+
             mapped = ProductDealer(
                 **mapped_in.model_dump(),
                 status=match_status,
                 user=user_local,
+                position=result_position.position,
             )
             session.add(mapped)
     await session.commit()
@@ -75,6 +94,8 @@ async def not_matching(
     user: User,
     session: AsyncSession = Depends(db_helper.scoped_session_dependency),
 ):
+    """Matching function. If there is no matching,
+    then it creates it, if there is, then it changes to “not matched”"""
     user_local = await session.merge(user)
     dealer_id = await session.get(DealerPrice, mapped_in.key)
     dealer_price = select(ProductDealer).where(
@@ -111,13 +132,19 @@ async def not_matching(
                     status=match_status,
                     created_at=func.now(),
                     product_id=None,
+                    position=None,
                 )
             )
             await session.execute(new_dealer_price)
         else:
-            await dealer_price_validate(mapped_in=mapped_in, session=session)
+            await validate_availability_check(
+                DealerPrice, mapped_in.key, session, "Dealer Price"
+            )
             mapped = ProductDealer(
-                **mapped_in.model_dump(), status=match_status, user=user_local
+                **mapped_in.model_dump(),
+                status=match_status,
+                user=user_local,
+                position=None,
             )
             session.add(mapped)
     await session.commit()
@@ -130,6 +157,8 @@ async def matching_later(
     user: User,
     session: AsyncSession = Depends(db_helper.scoped_session_dependency),
 ):
+    """Matching function. If there is no matching,
+    then it creates it, if there is, then it changes to “deferred”"""
     user_local = await session.merge(user)
     dealer_id = await session.get(DealerPrice, mapped_in.key)
     dealer_price = select(ProductDealer).where(
@@ -166,14 +195,36 @@ async def matching_later(
                     status=match_status,
                     created_at=func.now(),
                     product_id=None,
+                    positiion=None,
                 )
             )
             await session.execute(new_dealer_price)
         else:
-            await dealer_price_validate(mapped_in=mapped_in, session=session)
+            await validate_availability_check(
+                DealerPrice, mapped_in.key, session, "Dealer Price"
+            )
             mapped = ProductDealer(
-                **mapped_in.model_dump(), status=match_status, user=user_local
+                **mapped_in.model_dump(),
+                status=match_status,
+                user=user_local,
+                position=None,
             )
             session.add(mapped)
     await session.commit()
     await session.close()
+
+
+async def get_matched(
+    session: AsyncSession, dealerprice_id: int, count: int
+) -> list:
+    """Getting a list of comparable products (ML)"""
+    await validate_availability_check(
+        DealerPrice, dealerprice_id, session, "Dealer Price"
+    )
+    result = await session.execute(select(ModelVector.value))
+    valuse = result.scalars().all()
+    stmt = select(DealerPrice).where(DealerPrice.id == dealerprice_id)
+    result = await session.execute(stmt)
+    dealerprice = result.scalar()
+    market_name = [str(dealerprice.product_name)]
+    return await match(valuse, market_name, count)

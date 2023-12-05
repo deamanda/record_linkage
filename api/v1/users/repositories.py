@@ -9,6 +9,7 @@ from models.users import User
 async def get_users(
     session: AsyncSession, search_query: str
 ) -> Sequence[User]:
+    """Get list of users"""
     stmt = select(User).filter(
         User.username.ilike(f"%{search_query}%") if search_query else True,
     )

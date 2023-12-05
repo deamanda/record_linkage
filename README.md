@@ -39,7 +39,15 @@ alembic revision --autogenerate -m "Migration name"
 alembic upgrade head
 ```
 ### Запуск проекта
-- В файле config прописать путь до бд в формате 'postgresql+asyncpg://user:password@host:port/name' c указанием своих user, name, host, port, password 
+- В файле .env заполнить данные БД и секрета. Пример заполнения.
+```
+DB_NAME=postgres
+POSTGRES_USER=postgres
+POSTGRES_PASSWORD=password123
+DB_HOST=db
+DB_PORT=5432
+SECRET=moi_secret123123123123
+``` 
 - Запустить main.py
 
 # Docker
@@ -54,6 +62,15 @@ git checkout dev/rash
 ### Перейти в папку infra
 ```
 cd infra
+``` 
+### В файле .env заполнить данные БД и секрета. Пример заполнения.
+```
+DB_NAME=postgres
+POSTGRES_USER=postgres
+POSTGRES_PASSWORD=password123
+DB_HOST=db
+DB_PORT=5432
+SECRET=moi_secret123123123123
 ``` 
 ### Запустить сборку образа
 ```

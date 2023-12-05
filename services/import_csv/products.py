@@ -1,4 +1,7 @@
 import csv
+
+from sqlalchemy import select
+
 from models import Product
 
 
@@ -32,6 +35,15 @@ async def imports_product(file, session):
                     ym_article,
                     wb_article_td,
                 ) = row[2:]
+                existing_product = (
+                    await session.execute(
+                        select(Product).filter_by(article=article)
+                    )
+                ).scalar()
+
+                if existing_product:
+                    continue
+
                 product_data = {
                     "article": article if article else None,
                     "ean_13": int(float(ean_13)) if ean_13 else None,
