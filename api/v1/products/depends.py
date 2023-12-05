@@ -20,4 +20,5 @@ async def product_by_id(
             status_code=status.HTTP_404_NOT_FOUND,
             detail=f"Товар с id = {product_id} не найден.",
         )
+    await session.close()
     return product
