@@ -6,7 +6,6 @@ from api.v1.dealers.repositories import get_dealerprice
 
 from core.db_helper import db_helper
 
-
 from models import DealerPrice
 
 

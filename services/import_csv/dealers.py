@@ -8,11 +8,10 @@ async def imports_dealerprice(file, session):
     try:
         data = await file.read()
         decoded_data = data.decode("utf-8")
-
         csv_reader = csv.reader(decoded_data.splitlines(), delimiter=";")
-
         expected_columns = 7
         next(csv_reader)
+
         for row in csv_reader:
             if len(row) != expected_columns:
                 print(f"Skipping row {len(row)}, incorrect number of values.")
@@ -37,7 +36,6 @@ async def imports_dealerprice(file, session):
                     else None,
                     "dealer_id": int(dealer_id) if dealer_id else None,
                 }
-
                 product = DealerPrice(**product_data)
                 session.add(product)
             except ValueError as e:
@@ -53,20 +51,16 @@ async def imports_dealers(file, session):
     try:
         data = await file.read()
         decoded_data = data.decode("utf-8")
-
         csv_reader = csv.reader(decoded_data.splitlines(), delimiter=";")
-
         expected_columns = 2
         next(csv_reader)
         for row in csv_reader:
             if len(row) != expected_columns:
                 print(f"Skipping row {len(row)}, incorrect number of values.")
                 continue
-
             try:
                 (name) = row
                 product_data = {"name": str(name)}
-
                 product = Dealer(**product_data)
                 session.add(product)
             except ValueError as e:
