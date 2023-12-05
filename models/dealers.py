@@ -18,6 +18,8 @@ if TYPE_CHECKING:
 
 
 class Dealer(Base):
+    """Dealer model"""
+
     name: Mapped[str] = mapped_column(String())
     dealerprice: Mapped[list["DealerPrice"]] = relationship(
         back_populates="dealer"
@@ -34,6 +36,8 @@ class Dealer(Base):
 
 
 class DealerPrice(Base):
+    """Dealer Product Model"""
+
     product_key: Mapped[str | None] = mapped_column(String())
     price: Mapped[float | None] = mapped_column(Float())
     product_url: Mapped[str | None] = mapped_column(String())

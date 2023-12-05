@@ -15,6 +15,8 @@ from .config import settings
 
 
 class UserManager(IntegerIDMixin, BaseUserManager[User, int]):
+    """User Experience Settings"""
+
     reset_password_token_secret = settings.secret
     verification_token_secret = settings.secret
 

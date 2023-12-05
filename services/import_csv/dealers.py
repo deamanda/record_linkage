@@ -4,6 +4,7 @@ from datetime import datetime
 
 
 async def imports_dealerprice(file, session):
+    """Importing dealer product data from CSV"""
     try:
         data = await file.read()
         decoded_data = data.decode("utf-8")
@@ -19,7 +20,6 @@ async def imports_dealerprice(file, session):
 
             try:
                 (
-                    id,
                     product_key,
                     price,
                     product_url,
@@ -28,7 +28,6 @@ async def imports_dealerprice(file, session):
                     dealer_id,
                 ) = row
                 product_data = {
-                    "id": int(id),
                     "product_key": product_key if product_key else None,
                     "price": float(price) if price else None,
                     "product_url": product_url if product_url else None,
@@ -50,6 +49,7 @@ async def imports_dealerprice(file, session):
 
 
 async def imports_dealers(file, session):
+    """Importing dealers data from CSV"""
     try:
         data = await file.read()
         decoded_data = data.decode("utf-8")
@@ -64,8 +64,8 @@ async def imports_dealers(file, session):
                 continue
 
             try:
-                (id, name) = row
-                product_data = {"id": int(id), "name": str(name)}
+                (name) = row
+                product_data = {"name": str(name)}
 
                 product = Dealer(**product_data)
                 session.add(product)

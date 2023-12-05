@@ -22,6 +22,8 @@ if TYPE_CHECKING:
 
 
 class ProductDealer(Base):
+    """Matching model"""
+
     key: Mapped[int] = mapped_column(
         Integer, ForeignKey("dealerprices.id"), unique=True
     )
@@ -52,6 +54,7 @@ class ProductDealer(Base):
 
 
 def set_dealer_id_before_insert(mapper, connection, target):
+    """Signal to create a dealer based on the dealer's product"""
     from .dealers import DealerPrice
 
     if target.dealer_id is None and target.key:

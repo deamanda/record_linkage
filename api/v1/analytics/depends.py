@@ -15,7 +15,8 @@ async def count_match(
     user=None,
     dealer_id: int = None,
     user_id: int = None,
-):
+) -> int | None:
+    """Counting matched items"""
     stmt = (
         select(func.count())
         .select_from(ProductDealer)
@@ -51,6 +52,7 @@ async def get_position_statistics(
     dealer_id: int = None,
     user_id: int = None,
 ):
+    """Obtaining position percentages"""
     stmt = (
         select(ProductDealer.position, func.count().label("position_count"))
         .filter(

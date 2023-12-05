@@ -12,10 +12,14 @@ if TYPE_CHECKING:
 
 
 class ModelVector(Base):
+    """Vectors model (ML)"""
+
     value = Column(ARRAY(Float()))
 
 
 class ProductsMapped(Base):
+    """Auxiliary matching model"""
+
     position: Mapped[int] = mapped_column(Integer)
     dealerprice_id: Mapped[int] = mapped_column(
         Integer, ForeignKey("dealerprices.id")

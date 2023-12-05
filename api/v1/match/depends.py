@@ -19,6 +19,8 @@ async def matching(
     user: User,
     session: AsyncSession = Depends(db_helper.scoped_session_dependency),
 ):
+    """Matching function. If there is no matching,
+    then creates it, if there is, then changes it to “matched”"""
     user_local = await session.merge(user)
     dealer_id = await session.get(DealerPrice, mapped_in.key)
     dealer_price = select(ProductDealer).where(
@@ -92,6 +94,8 @@ async def not_matching(
     user: User,
     session: AsyncSession = Depends(db_helper.scoped_session_dependency),
 ):
+    """Matching function. If there is no matching,
+    then it creates it, if there is, then it changes to “not matched”"""
     user_local = await session.merge(user)
     dealer_id = await session.get(DealerPrice, mapped_in.key)
     dealer_price = select(ProductDealer).where(
@@ -153,6 +157,8 @@ async def matching_later(
     user: User,
     session: AsyncSession = Depends(db_helper.scoped_session_dependency),
 ):
+    """Matching function. If there is no matching,
+    then it creates it, if there is, then it changes to “deferred”"""
     user_local = await session.merge(user)
     dealer_id = await session.get(DealerPrice, mapped_in.key)
     dealer_price = select(ProductDealer).where(
@@ -211,6 +217,7 @@ async def matching_later(
 async def get_matched(
     session: AsyncSession, dealerprice_id: int, count: int
 ) -> list:
+    """Getting a list of comparable products (ML)"""
     await validate_availability_check(
         DealerPrice, dealerprice_id, session, "Dealer Price"
     )

@@ -11,14 +11,14 @@ if TYPE_CHECKING:
 
 
 class Product(Base):
+    """Customer product model"""
+
     article: Mapped[str | None] = mapped_column(String(), unique=True)
     ean_13: Mapped[int | None] = mapped_column(BigInteger())
     name: Mapped[str | None] = mapped_column(String())
     cost: Mapped[float | None] = mapped_column(Float())
     recommended_price: Mapped[float | None] = mapped_column(Float())
-    category_id: Mapped[int | None] = mapped_column(
-        Integer()
-    )  # категории мб зависимость one to many
+    category_id: Mapped[int | None] = mapped_column(Integer())
     ozon_name: Mapped[str | None] = mapped_column(String())
     name_1c: Mapped[str | None] = mapped_column(String())
     wb_name: Mapped[str | None] = mapped_column(String())

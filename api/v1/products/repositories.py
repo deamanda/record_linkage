@@ -12,6 +12,7 @@ from services.match import create_embeddings
 async def get_products(
     session: AsyncSession, search_query: str
 ) -> Sequence[Product]:
+    """Getting a list of products"""
     stmt = select(Product).filter(
         Product.name.ilike(f"%{search_query}%") if search_query else True,
     )
@@ -24,12 +25,14 @@ async def get_products(
 async def get_product(
     session: AsyncSession, product_id: int
 ) -> Product | None:
+    """Receiving goods by ID"""
     return await session.get(Product, product_id)
 
 
 async def model_training(
     session: AsyncSession,
 ):
+    """Product training function"""
     result = await session.execute(select(Product.name))
     product_names = [row[0] for row in result]
     vectors_list = create_embeddings(product_names)

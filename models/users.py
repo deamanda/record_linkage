@@ -12,6 +12,8 @@ if TYPE_CHECKING:
 
 
 class User(SQLAlchemyBaseUserTable[int], Base):
+    """User model"""
+
     email: Mapped[str] = mapped_column(String, nullable=False)
     username: Mapped[str] = mapped_column(String, nullable=False, unique=True)
     registered_at: Mapped[datetime] = mapped_column(

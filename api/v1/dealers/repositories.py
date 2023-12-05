@@ -10,6 +10,7 @@ from models.dealers import DealerPrice, Dealer
 
 
 async def get_dealer(session: AsyncSession, dealerprice) -> Dealer | None:
+    """Receiving dealer data"""
     return await session.get(Dealer, dealerprice.dealer_id)
 
 
@@ -20,6 +21,7 @@ async def get_dealerprices(
     search_query: str,
     sort_by_price: bool,
 ) -> Sequence[DealerPrice]:
+    """Receiving dealer's goods"""
     query = (
         select(DealerPrice)
         .options(
@@ -62,6 +64,7 @@ async def get_dealerprices(
 async def get_dealerprice(
     session: AsyncSession, dealerprice_id: int
 ) -> DealerPrice | None:
+    """Receiving dealer's goods by ID"""
     stmt = (
         select(DealerPrice)
         .where(DealerPrice.id == dealerprice_id)
@@ -79,6 +82,7 @@ async def get_dealerprice(
 
 
 async def get_dealers(session: AsyncSession) -> Sequence[Dealer]:
+    """Getting a list of dealers"""
     stmt = select(Dealer).order_by(Dealer.id)
     result = await session.execute(stmt)
     all_dealers = result.scalars().all()

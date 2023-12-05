@@ -20,6 +20,7 @@ from models.product_dealer import ProductDealer
 async def get_mapped(
     session: AsyncSession, count: int, dealerprice_id: int
 ) -> list[Product]:
+    """Converting a list into products. Positioning"""
     products_id = await get_matched(
         session=session, count=count, dealerprice_id=dealerprice_id
     )
@@ -50,6 +51,7 @@ async def post_mapped(
     mapped_in: ProductDealerKey,
     user: User,
 ):
+    """Create Mapping"""
     await matching(
         session=session,
         match_status="matched",
@@ -64,6 +66,7 @@ async def post_not_mapped(
     mapped_in: ProductDealerKeyNone,
     user: User,
 ):
+    """Create nor Mapping"""
     await not_matching(
         session=session,
         match_status="not matched",
@@ -78,6 +81,7 @@ async def post_mapped_later(
     mapped_in: ProductDealerKeyNone,
     user: User,
 ):
+    """Create deferred"""
     await matching_later(
         session=session,
         match_status="deferred",
@@ -96,6 +100,7 @@ async def get_matcheds(
     user: User | None = None,
     dealer_id: int | None = None,
 ):
+    """Get all matched products"""
     stmt = (
         select(ProductDealer)
         .options(
