@@ -20,7 +20,7 @@ repos:
         entry: autoflake
         language: system
         types: [python]
-        args: [--in-place, --remove-all-unused-imports, --remove-duplicate-keys, --exclude=apps.py]
+        args: [--in-place, --remove-all-unused-imports, --remove-duplicate-keys, --exclude=alembic/versions/]
 
       - id: flake8
         name: flake8
@@ -28,9 +28,9 @@ repos:
         language: system
         types: [python]
         args: [
-          "--ignore=E203,E266,E501,E704,W503,B905,B907,W291,F811",
+          "--ignore=E203,E266,E501,E704,W503,B905,B907,W291,F811,E712,E711",
           "--max-line-length=79",
           "--max-complexity=18",
           "--select=B,C,E,F,W,T4,B9",
-          "--exclude=apps.py",
+          "--exclude=alembic/versions/",
         ]

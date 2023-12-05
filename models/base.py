@@ -8,6 +8,8 @@ from sqlalchemy.orm import (
 
 
 class Base(DeclarativeBase):
+    """Basic model"""
+
     __abstract__ = True
 
     @declared_attr.directive
