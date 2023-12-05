@@ -1,21 +1,23 @@
 import csv
+
+from sqlalchemy import select
+
 from models import Product
 
 
 async def imports_product(file, session):
+    """Importing product data from CSV"""
     try:
         data = await file.read()
         decoded_data = data.decode("utf-8")
-
         csv_reader = csv.reader(decoded_data.splitlines(), delimiter=";")
-
         expected_columns = 15
         next(csv_reader)
+
         for row in csv_reader:
             if len(row) != expected_columns:
                 print(f"Skipping row {len(row)}, incorrect number of values.")
                 continue
-
             try:
                 (
                     article,
@@ -32,6 +34,14 @@ async def imports_product(file, session):
                     ym_article,
                     wb_article_td,
                 ) = row[2:]
+                existing_product = (
+                    await session.execute(
+                        select(Product).filter_by(article=article)
+                    )
+                ).scalar()
+
+                if existing_product:
+                    continue
                 product_data = {
                     "article": article if article else None,
                     "ean_13": int(float(ean_13)) if ean_13 else None,
@@ -51,7 +61,6 @@ async def imports_product(file, session):
                     "ym_article": ym_article if ym_article else None,
                     "wb_article_td": wb_article_td if wb_article_td else None,
                 }
-
                 product = Product(**product_data)
                 session.add(product)
             except ValueError as e:

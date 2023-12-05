@@ -1,13 +1,16 @@
 from pydantic import BaseModel, ConfigDict
 
 
-class ProductBase(BaseModel):
+class ProductSmall(BaseModel):
     id: int
-    article: str | None
-    ean_13: int | None
     name: str | None
-    cost: float | None
+    article: str | None
     recommended_price: float | None
+    cost: float | None
+
+
+class ProductBase(ProductSmall):
+    ean_13: int | None
     category_id: int | None
     ozon_name: str | None
     name_1c: str | None
