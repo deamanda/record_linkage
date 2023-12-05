@@ -1,6 +1,6 @@
 # record_linkage
 ![prosept_workflow](https://github.com/deamanda/record_linkage/actions/workflows/prosept_workflows.yml/badge.svg?event=push)
-
+<a href="https://codeclimate.com/github/Rashid-creator-droid/record_linkage/maintainability"><img src="https://api.codeclimate.com/v1/badges/e2dbd521765cbb9bdf94/maintainability" /></a>
 # Стек технологий
 <div id="badges" align="center">
   <img src="https://img.shields.io/badge/Python%203.11-FFD43B?style=for-the-badge&logo=python&logoColor=blue"/>
