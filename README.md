@@ -1,5 +1,5 @@
 # record_linkage
-![prosept_workflow](https://github.com/deamanda/record_linkage/actions/workflows/prosept_workflows.yml/badge.svg)
+![prosept_workflow](https://github.com/deamanda/record_linkage/actions/workflows/prosept_workflows.yml/badge.svg?event=push)
 
 # Стек технологий
 <div id="badges" align="center">
