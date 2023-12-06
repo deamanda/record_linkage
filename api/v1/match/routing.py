@@ -23,7 +23,7 @@ from core.db_helper import db_helper
 from fastapi import Query
 
 from models import User
-from services.validators import MatchingStatus
+from services.choices import MatchingStatus, SortedField
 
 router = APIRouter(prefix="/matching", tags=["Сопоставление"])
 current_active_user = fastapi_users.current_user(active=True)
@@ -39,12 +39,12 @@ async def get_matched(
     status: MatchingStatus = Query(
         default=None, description="Matching status"
     ),
-    sort_by_time: bool = Query(default=None, description="Sort by time"),
+    sort_by: SortedField = Query(default=None, description="Sort by"),
     session: AsyncSession = Depends(db_helper.scoped_session_dependency),
 ):
     value = await get_matcheds(
         session=session,
-        sort_by_time=sort_by_time,
+        sort_by=sort_by,
         status=status,
         search_query=search_query,
         user_id=None,
@@ -80,12 +80,12 @@ async def get_matched(
         default=None, description="Matching status"
     ),
     user: User = Depends(current_active_user),
-    sort_by_time: bool = Query(default=None, description="Sort by time"),
+    sort_by: SortedField = Query(default=None, description="Sort by"),
     session: AsyncSession = Depends(db_helper.scoped_session_dependency),
 ):
     value = await get_matcheds(
         session=session,
-        sort_by_time=sort_by_time,
+        sort_by=sort_by,
         status=status,
         search_query=search_query,
         user=user,
@@ -104,12 +104,12 @@ async def get_matched(
     status: MatchingStatus = Query(
         default=None, description="Matching status"
     ),
-    sort_by_time: bool = Query(default=None, description="Sort by time"),
+    sort_by: SortedField = Query(default=None, description="Sort by"),
     session: AsyncSession = Depends(db_helper.scoped_session_dependency),
 ):
     value = await get_matcheds(
         session=session,
-        sort_by_time=sort_by_time,
+        sort_by=sort_by,
         status=status,
         search_query=search_query,
         user_id=user_id,
@@ -128,12 +128,12 @@ async def get_matched(
     status: MatchingStatus = Query(
         default=None, description="Matching status"
     ),
-    sort_by_time: bool = Query(default=None, description="Sort by time"),
+    sort_by: SortedField = Query(default=None, description="Sort by"),
     session: AsyncSession = Depends(db_helper.scoped_session_dependency),
 ):
     value = await get_matcheds(
         session=session,
-        sort_by_time=sort_by_time,
+        sort_by=sort_by,
         status=status,
         search_query=search_query,
         dealer_id=dealer_id,

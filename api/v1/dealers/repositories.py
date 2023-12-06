@@ -7,6 +7,7 @@ from sqlalchemy.orm import joinedload
 
 from models import DealerPrice, Dealer, ProductDealer
 from models.dealers import DealerPrice, Dealer
+from services.choices import SortedField
 
 
 async def get_dealer(session: AsyncSession, dealerprice) -> Dealer | None:
@@ -16,10 +17,9 @@ async def get_dealer(session: AsyncSession, dealerprice) -> Dealer | None:
 
 async def get_dealerprices(
     session: AsyncSession,
-    sort_by_date: bool,
+    sort_by: SortedField | None,
     status: str | None,
     search_query: str,
-    sort_by_price: bool,
 ) -> Sequence[DealerPrice]:
     """Receiving dealer's goods"""
     query = (
@@ -46,14 +46,17 @@ async def get_dealerprices(
             else True,
         )
     )
-    if sort_by_price is True:
+
+    if sort_by == "descending price":
         query = query.order_by(desc(DealerPrice.price))
-    elif sort_by_price is False:
+    elif sort_by == "ascending price":
         query = query.order_by(DealerPrice.price)
-    elif sort_by_date is False:
+    elif sort_by == "ascending time":
         query = query.order_by(DealerPrice.date)
-    else:
+    elif sort_by == "descending time":
         query = query.order_by(desc(DealerPrice.date))
+    else:
+        query = query.order_by(DealerPrice.id)
 
     result = await session.execute(query)
     all_dealerprices = result.scalars().all()
