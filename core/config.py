@@ -1,4 +1,5 @@
 import logging
+from datetime import datetime
 
 from dotenv import load_dotenv
 from pydantic_settings import BaseSettings
@@ -9,6 +10,9 @@ load_dotenv()
 
 # FastAPI Additional settings
 disable_installed_extensions_check()
+
+
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 
 # Env settings
@@ -28,11 +32,17 @@ class Settings(BaseSettings):
     secret: str = f"{SECRET}"
 
 
-# logger settings
+# Настройки логирования
+current_time = datetime.now().strftime("%Y-%m-%d_%H-%M")
+log_file_path = f"prosept_log_{current_time}.log"
+os.makedirs(os.path.join(BASE_DIR, "logs"), exist_ok=True)
+logs_dir = os.path.join(BASE_DIR, "logs", log_file_path)
+
+
 logging.basicConfig(
-    level=logging.INFO,
+    level=logging.WARNING,
     format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
-    filename="py_log.log",
+    filename=logs_dir,
 )
 logger = logging.getLogger("Prosept_logs")
 
