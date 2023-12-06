@@ -6,12 +6,14 @@ from models import User
 from .config import settings
 from .usermanager import get_user_manager
 
-cookie_transport = CookieTransport(cookie_name="Prosept", cookie_max_age=3600)
+cookie_transport = CookieTransport(
+    cookie_name="Prosept", cookie_max_age=3600 * 24 * 7
+)
 
 
 def get_jwt_strategy() -> JWTStrategy:
     """JWT token settings"""
-    return JWTStrategy(secret=settings.secret, lifetime_seconds=3600 * 24)
+    return JWTStrategy(secret=settings.secret, lifetime_seconds=3600 * 24 * 7)
 
 
 auth_backend = AuthenticationBackend(
