@@ -38,7 +38,6 @@ log_file_path = f"prosept_log_{current_time}.log"
 os.makedirs(os.path.join(BASE_DIR, "logs"), exist_ok=True)
 logs_dir = os.path.join(BASE_DIR, "logs", log_file_path)
 
-
 logging.basicConfig(
     level=logging.WARNING,
     format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
