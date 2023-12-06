@@ -17,6 +17,7 @@ from api.v1.match.schemas import (
 )
 from api.v1.products.schemas import ProductSmall
 from core.auth import fastapi_users
+from core.config import logger
 
 from core.db_helper import db_helper
 from fastapi import Query
@@ -62,6 +63,7 @@ async def get_mapped_products(
     count: int = Query(ge=1, le=25, default=5),
     session: AsyncSession = Depends(db_helper.scoped_session_dependency),
 ):
+    logger.info("Receiving matched products.")
     return await get_mapped(
         session=session, dealerprice_id=dealerprice_id, count=count
     )

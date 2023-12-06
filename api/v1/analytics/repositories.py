@@ -43,8 +43,10 @@ async def get_compared(
         dealer_id=dealer_id,
         user_id=user_id,
     )
+
     total_matching = matched + not_matched
     accuracy = matched / total_matching if total_matching > 0 else 0.0
+
     position = await get_position_statistics(
         session=session,
         start_date=start_date,
