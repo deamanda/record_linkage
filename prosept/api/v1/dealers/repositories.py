@@ -5,7 +5,7 @@ from sqlalchemy.future import select
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import joinedload
 
-from models import DealerPrice, Dealer, ProductDealer
+from models import ProductDealer
 from models.dealers import DealerPrice, Dealer
 from services.choices import SortedField
 
