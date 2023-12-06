@@ -36,6 +36,15 @@ def event_loop():
 @pytest_asyncio.fixture
 async def test_client():
     from main import app
+    from models.users import User
+    from core.auth import current_user
+    user = User(
+        email="user@example.com",
+        hashed_password="aaa",
+        is_active=True,
+        is_verified=True,
+        is_superuser=False,)
+    app.dependency_overrides[current_user] = lambda: user
     async with httpx.AsyncClient(
          app=app, base_url='http://test/api/v1/') as test_client:
         yield test_client
