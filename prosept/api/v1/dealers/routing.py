@@ -58,6 +58,7 @@ async def get_dealer_price(
     summary="Получить товары дилеров",
 )
 async def get_all_dealer_price(
+    dealer_name: str = Query(default=None, description="Dealer"),
     search_query: str = Query(default=None, description="Search"),
     status: DealerPriceStatus = Query(
         default=None, description="Matching status"
@@ -70,6 +71,7 @@ async def get_all_dealer_price(
         sort_by=sort_by,
         status=status,
         search_query=search_query,
+        dealer_name=dealer_name,
     )
     return paginate(value)
 

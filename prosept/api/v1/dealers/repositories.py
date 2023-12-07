@@ -17,6 +17,7 @@ async def get_dealer(session: AsyncSession, dealerprice) -> Dealer | None:
 
 async def get_dealerprices(
     session: AsyncSession,
+    dealer_name: str | None,
     sort_by: SortedField | None,
     status: str | None,
     search_query: str,
@@ -31,6 +32,7 @@ async def get_dealerprices(
             ),
         )
         .outerjoin(ProductDealer, ProductDealer.key == DealerPrice.id)
+        .outerjoin(Dealer, Dealer.id == DealerPrice.dealer_id)
         .filter(
             or_(
                 (ProductDealer.status == status)
@@ -41,11 +43,17 @@ async def get_dealerprices(
                     else True
                 ),
             ),
+            Dealer.name.ilike(f"%{dealer_name}%")  # Фильтрация по имени дилера
+            if dealer_name
+            else True,
             DealerPrice.product_name.ilike(f"%{search_query}%")
             if search_query
             else True,
         )
     )
+
+    # if dealer_name:
+    #     query = query.filter(DealerPrice.dealer.name)
 
     if sort_by == "descending price":
         query = query.order_by(desc(DealerPrice.price))
