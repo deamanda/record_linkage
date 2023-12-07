@@ -48,6 +48,12 @@ async def matching(
         )
         position = await session.execute(pos)
         result_position = position.scalar()
+        if not result_position:
+            await session.close()
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail="Not yet!",
+            )
         dealer_price_another = select(ProductDealer).where(
             and_(
                 ProductDealer.key == mapped_in.key,
@@ -56,24 +62,18 @@ async def matching(
         result = await session.execute(dealer_price_another)
         dealer_price_result_another = result.scalar()
         if dealer_price_result_another:
-            if result_position:
-                new_dealer_price = (
-                    update(ProductDealer)
-                    .where(
-                        ProductDealer.id == dealer_price_result_another.id,
-                    )
-                    .values(
-                        status=match_status,
-                        created_at=func.now(),
-                        product_id=mapped_in.product_id,
-                        position=result_position.position,
-                    )
+            new_dealer_price = (
+                update(ProductDealer)
+                .where(
+                    ProductDealer.id == dealer_price_result_another.id,
                 )
-            else:
-                raise HTTPException(
-                    status_code=status.HTTP_404_NOT_FOUND,
-                    detail="Not yet!",
+                .values(
+                    status=match_status,
+                    created_at=func.now(),
+                    product_id=mapped_in.product_id,
+                    position=result_position.position,
                 )
+            )
             await session.execute(new_dealer_price)
         else:
             await validate_availability_check(
