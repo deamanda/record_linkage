@@ -123,30 +123,6 @@ async def get_matched(
     return paginate(value)
 
 
-@router.get(
-    "/dealer/{dealer_id}",
-    summary="Получить сопоставленные товары дилера",
-    response_model=LimitOffsetPage[ProductDealer],
-)
-async def get_matched(
-    dealer_id: int,
-    search_query: str = Query(default=None, description="Search"),
-    status: MatchingStatus = Query(
-        default=None, description="Matching status"
-    ),
-    sort_by: SortedField = Query(default=None, description="Sort by"),
-    session: AsyncSession = Depends(db_helper.scoped_session_dependency),
-):
-    value = await get_matcheds(
-        session=session,
-        sort_by=sort_by,
-        status=status,
-        search_query=search_query,
-        dealer_id=dealer_id,
-    )
-    return paginate(value)
-
-
 @router.post(
     "/accepted",
     summary="Сопоставить товары (есть сопоставление)",

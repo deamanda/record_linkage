@@ -100,7 +100,6 @@ async def get_matcheds(
     search_query: str | None,
     user_id: int | None = None,
     user: User | None = None,
-    dealer_id: int | None = None,
 ):
     """Get all matched products"""
     stmt = (
@@ -127,8 +126,6 @@ async def get_matcheds(
     elif user:
         user_local = await session.merge(user)
         stmt = stmt.filter(ProductDealer.user == user_local)
-    elif dealer_id:
-        stmt = stmt.filter(ProductDealer.dealer_id == dealer_id)
 
     if sort_by == "descending price":
         stmt = stmt.order_by(desc(DealerPrice.price))
@@ -139,7 +136,7 @@ async def get_matcheds(
     elif sort_by == "descending time":
         stmt = stmt.order_by(desc(ProductDealer.created_at))
     else:
-        stmt = stmt.order_by(ProductDealer.id)
+        stmt = stmt.order_by(desc(ProductDealer.created_at))
 
     result = await session.execute(stmt)
     all_products = result.scalars().all()
