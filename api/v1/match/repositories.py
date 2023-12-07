@@ -11,7 +11,7 @@ from api.v1.match.depends import (
     get_matched,
 )
 from api.v1.match.schemas import ProductDealerKey, ProductDealerKeyNone
-from models import DealerPrice, User
+from models import DealerPrice, User, Dealer
 from models.match import ProductsMapped
 from models.products import Product
 from models.product_dealer import ProductDealer
@@ -95,6 +95,7 @@ async def post_mapped_later(
 async def get_matcheds(
     session: AsyncSession,
     sort_by: SortedField | None,
+    dealer_name: str | None,
     status: str | None,
     search_query: str | None,
     user_id: int | None = None,
@@ -111,8 +112,10 @@ async def get_matcheds(
             ),
         )
         .outerjoin(DealerPrice, ProductDealer.key == DealerPrice.id)
+        .outerjoin(Dealer, Dealer.id == DealerPrice.dealer_id)
         .filter(
             or_(ProductDealer.status == status, status is None),
+            Dealer.name.ilike(f"%{dealer_name}%") if dealer_name else True,
             DealerPrice.product_name.ilike(f"%{search_query}%")
             if search_query
             else True,

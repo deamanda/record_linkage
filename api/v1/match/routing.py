@@ -35,6 +35,7 @@ current_active_user = fastapi_users.current_user(active=True)
     response_model=LimitOffsetPage[ProductDealer],
 )
 async def get_matched(
+    dealer_name: str = Query(default=None, description="Dealer"),
     search_query: str = Query(default=None, description="Search"),
     status: MatchingStatus = Query(
         default=None, description="Matching status"
@@ -49,6 +50,7 @@ async def get_matched(
         search_query=search_query,
         user_id=None,
         user=None,
+        dealer_name=dealer_name,
     )
     return paginate(value)
 
@@ -75,6 +77,7 @@ async def get_mapped_products(
     response_model=LimitOffsetPage[ProductDealer],
 )
 async def get_matched(
+    dealer_name: str = Query(default=None, description="Dealer"),
     search_query: str = Query(default=None, description="Search"),
     status: MatchingStatus = Query(
         default=None, description="Matching status"
@@ -89,6 +92,7 @@ async def get_matched(
         status=status,
         search_query=search_query,
         user=user,
+        dealer_name=dealer_name,
     )
     return paginate(value)
 
@@ -100,6 +104,7 @@ async def get_matched(
 )
 async def get_matched(
     user_id: int,
+    dealer_name: str = Query(default=None, description="Dealer"),
     search_query: str = Query(default=None, description="Search"),
     status: MatchingStatus = Query(
         default=None, description="Matching status"
@@ -113,6 +118,7 @@ async def get_matched(
         status=status,
         search_query=search_query,
         user_id=user_id,
+        dealer_name=dealer_name,
     )
     return paginate(value)
 
