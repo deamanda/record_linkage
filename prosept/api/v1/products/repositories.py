@@ -6,7 +6,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from models import ModelVector
 from models.products import Product
-from services.match import create_embeddings
+from services.DS_match.match import norm_name, create_embeddings
 
 
 async def get_products(
@@ -33,14 +33,26 @@ async def model_training(
     session: AsyncSession,
 ):
     """Product training function"""
-    result = await session.execute(select(Product.name))
-    product_names = [row[0] for row in result]
-    vectors_list = create_embeddings(product_names)
-    python_list = vectors_list.tolist()
+    result = await session.execute(select(Product.id, Product.name_1c))
+    product_info = [
+        [
+            row[0],
+            norm_name(row[1])[1] if row[1] else row[1],
+            norm_name(row[1])[0] if row[1] else row[1],
+        ]
+        for row in result
+    ]
+
+    product_names = [row[2] for row in product_info]
+    vector_names = create_embeddings(product_names)
     stmt = delete(ModelVector)
     await session.execute(stmt)
-    for inner_list in python_list:
-        model_instance = ModelVector(value=inner_list)
+    for i, row in enumerate(product_info):
+        model_instance = ModelVector(
+            value=vector_names[i],
+            product_key=row[0],
+            size=row[1],
+        )
         session.add(model_instance)
     await session.commit()
     await session.close()
