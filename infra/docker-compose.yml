@@ -26,6 +26,7 @@ services:
     pull_policy: always
     volumes:
       - .:/usr/src/app
+      - ./logs/:/app/logs/
     depends_on:
       - db
     env_file:
