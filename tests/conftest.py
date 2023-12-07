@@ -5,6 +5,7 @@ import pytest_asyncio
 import core.config as conf
 from core.config import Settings, DB_USER, DB_PASS, DB_HOST, DB_PORT, DB_NAME_TEST
 from models import Dealer, DealerPrice, Product, User
+from models.match import ProductsMapped
 from datetime import datetime
 from .utils import data_to_model
 from fastapi_users.password import PasswordHelper
@@ -75,7 +76,7 @@ async def test_product():
 async def test_dealer():
     dealer = {
          'id': 1,
-         'name': 'dye',
+         'name': 'Dealer d',
          }
     return await data_to_model(Dealer, dealer)
 
@@ -84,7 +85,7 @@ async def test_dealer():
 async def test_dealer_price():
     dealer_price = {
         'id': 1,
-        'product_key': None,
+        'product_key': '1',
         'price': 100.2,
         'product_url': 'https://example.com/',
         'product_name': 'green dye',
@@ -107,10 +108,12 @@ async def test_user():
     return await data_to_model(User, user_data)
 
 @pytest_asyncio.fixture
-async def test_login(test_client, test_user):
-    email = test_user['email']
-    headers= {'content-type': 'application/x-www-form-urlencoded'}
-    response = await test_client.post('auth/jwt/login', data={'username': email, 'password': 'aaa'}, headers=headers)
-    #response = await test_client.post(f'auth/jwt/login?username={email}&password=aaa', headers=headers)
-    return response.json()
+async def test_products_mapped(test_product, test_dealer_price):
+    data = {
+        'position': 1,
+        'dealerprice_id': 1,
+        'product_id': 1,
+        'id': 1,
+    }
+    return await data_to_model(ProductsMapped, data)
 

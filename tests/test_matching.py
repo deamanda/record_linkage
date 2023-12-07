@@ -1,7 +1,5 @@
 import pytest
 from fastapi import status
-from pathlib import Path
-from httpx import Cookies
 
 
 pytestmark = pytest.mark.asyncio
@@ -37,10 +35,10 @@ async def test_match_dealer(test_client, test_product, test_dealer, test_dealer_
     assert response.status_code == status.HTTP_200_OK
 
 
-async def test_match_accept(test_client, test_product, test_dealer, test_dealer_price, test_user):
+async def test_match_accept(test_client, test_product, test_dealer, test_dealer_price, test_user, test_products_mapped):
     data = {
-        'key': 1,
-        'product_id': 1
+        'key': '1',
+        'product_id': '1'
         }
     email = test_user['email']
     headers= {'content-type': 'application/x-www-form-urlencoded'}
@@ -50,19 +48,30 @@ async def test_match_accept(test_client, test_product, test_dealer, test_dealer_
     response = await test_client.post('v1/matching/accepted', json=data, cookies=cookies)
     assert response.status_code == status.HTTP_200_OK
 
-async def test_match_not_accept(test_client, test_product, test_dealer, test_dealer_price):
+async def test_match_not_accept(test_client, test_product, test_dealer, test_dealer_price, test_user):
     data = {
-        'key': 1,
+        'key': '1',
         'product_id': 1
         }
-    response = await test_client.post('v1/matching/not-accepted', json=data)
+    email = test_user['email']
+    headers= {'content-type': 'application/x-www-form-urlencoded'}
+    response = await test_client.post('auth/jwt/login', data={'username': email, 'password': 'aaa'}, headers=headers)
+    value = response.cookies['Prosept']
+    cookies = {'Prosept': value}
+    response = await test_client.post('v1/matching/not-accepted', json=data, cookies=cookies)
     assert response.status_code == status.HTTP_200_OK
 
 
-async def test_match_not_accept_later(test_client, test_product, test_dealer, test_dealer_price):
+
+async def test_match_not_accept_later(test_client, test_product, test_dealer, test_dealer_price, test_user):
     data = {
-        'key': 1,
+        'key': '1',
         'product_id': 1
         }
-    response = await test_client.post('v1/matching/accepted-later', json=data)
+    email = test_user['email']
+    headers= {'content-type': 'application/x-www-form-urlencoded'}
+    response = await test_client.post('auth/jwt/login', data={'username': email, 'password': 'aaa'}, headers=headers)
+    value = response.cookies['Prosept']
+    cookies = {'Prosept': value}    
+    response = await test_client.post('v1/matching/accepted-later', json=data, cookies=cookies)
     assert response.status_code == status.HTTP_200_OK
