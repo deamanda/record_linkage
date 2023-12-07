@@ -104,14 +104,14 @@ SECRET=moi_secret123123123123
 ``` 
 - Запустить main.py
 
-# Docker
+## Установка контейнера Docker
 ### Склонировать репозиторий
 ```
 https://github.com/deamanda/record_linkage.git
 ``` 
-### Перейти в ветку dev/rash
+### Перейти в ветку main
 ```
-git checkout dev/rash
+git checkout main
 ``` 
 ### Перейти в папку infra
 ```
@@ -131,11 +131,13 @@ SECRET=moi_secret123123123123
 sudo docker-compose up -d
 ``` 
 
+---
+
 ### Применить миграции
 ```
 docker-compose exec backend alembic upgrade head
 ``` 
-# Документация проекта.
+# Документация API первой версии будет доступна по адресу.
 ```
 http://localhost/docs/v1
 ``` 
