@@ -11,7 +11,7 @@ from api.v1.match.depends import (
     get_matched,
 )
 from api.v1.match.schemas import ProductDealerKey, ProductDealerKeyNone
-from models import DealerPrice, User
+from models import DealerPrice, User, Dealer
 from models.match import ProductsMapped
 from models.products import Product
 from models.product_dealer import ProductDealer
@@ -95,11 +95,11 @@ async def post_mapped_later(
 async def get_matcheds(
     session: AsyncSession,
     sort_by: SortedField | None,
+    dealer_name: str | None,
     status: str | None,
     search_query: str | None,
     user_id: int | None = None,
     user: User | None = None,
-    dealer_id: int | None = None,
 ):
     """Get all matched products"""
     stmt = (
@@ -111,8 +111,10 @@ async def get_matcheds(
             ),
         )
         .outerjoin(DealerPrice, ProductDealer.key == DealerPrice.id)
+        .outerjoin(Dealer, Dealer.id == DealerPrice.dealer_id)
         .filter(
             or_(ProductDealer.status == status, status is None),
+            Dealer.name.ilike(f"%{dealer_name}%") if dealer_name else True,
             DealerPrice.product_name.ilike(f"%{search_query}%")
             if search_query
             else True,
@@ -124,8 +126,6 @@ async def get_matcheds(
     elif user:
         user_local = await session.merge(user)
         stmt = stmt.filter(ProductDealer.user == user_local)
-    elif dealer_id:
-        stmt = stmt.filter(ProductDealer.dealer_id == dealer_id)
 
     if sort_by == "descending price":
         stmt = stmt.order_by(desc(DealerPrice.price))
@@ -136,7 +136,7 @@ async def get_matcheds(
     elif sort_by == "descending time":
         stmt = stmt.order_by(desc(ProductDealer.created_at))
     else:
-        stmt = stmt.order_by(ProductDealer.id)
+        stmt = stmt.order_by(desc(ProductDealer.created_at))
 
     result = await session.execute(stmt)
     all_products = result.scalars().all()
