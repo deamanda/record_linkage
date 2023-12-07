@@ -43,17 +43,12 @@ async def get_dealerprices(
                     else True
                 ),
             ),
-            Dealer.name.ilike(f"%{dealer_name}%")  # Фильтрация по имени дилера
-            if dealer_name
-            else True,
+            Dealer.name.ilike(f"%{dealer_name}%") if dealer_name else True,
             DealerPrice.product_name.ilike(f"%{search_query}%")
             if search_query
             else True,
         )
     )
-
-    # if dealer_name:
-    #     query = query.filter(DealerPrice.dealer.name)
 
     if sort_by == "descending price":
         query = query.order_by(desc(DealerPrice.price))
