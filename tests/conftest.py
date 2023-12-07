@@ -4,9 +4,10 @@ import pytest
 import pytest_asyncio
 import core.config as conf
 from core.config import Settings, DB_USER, DB_PASS, DB_HOST, DB_PORT, DB_NAME_TEST
-from models import Dealer, DealerPrice, Product
+from models import Dealer, DealerPrice, Product, User
 from datetime import datetime
 from .utils import data_to_model
+from fastapi_users.password import PasswordHelper
 
 
 TEST_DB = f"postgresql+asyncpg://{DB_USER}:{DB_PASS}@{DB_HOST}:{DB_PORT}/{DB_NAME_TEST}"
@@ -36,17 +37,17 @@ def event_loop():
 @pytest_asyncio.fixture
 async def test_client():
     from main import app
-    from models.users import User
     from core.auth import current_user
     user = User(
-        email="user@example.com",
-        hashed_password="aaa",
+        email='dummy_user@example.com',
+        hashed_password='dummy',
         is_active=True,
         is_verified=True,
-        is_superuser=False,)
+        is_superuser=False,
+    )
     app.dependency_overrides[current_user] = lambda: user
     async with httpx.AsyncClient(
-         app=app, base_url='http://test/api/v1/') as test_client:
+         app=app, base_url='http://test/api/') as test_client:
         yield test_client
 
 
@@ -91,3 +92,25 @@ async def test_dealer_price():
         'dealer_id': 1,
         }
     return await data_to_model(DealerPrice, dealer_price)
+
+@pytest_asyncio.fixture
+async def test_user():
+    test_password='aaa'
+    user_data = {
+        'email': 'user@example.com',
+        'username': 'user',
+        'hashed_password': PasswordHelper().hash(password=test_password),
+        'is_active': True,
+        'is_verified': True,
+        'is_superuser': False,
+        }
+    return await data_to_model(User, user_data)
+
+@pytest_asyncio.fixture
+async def test_login(test_client, test_user):
+    email = test_user['email']
+    headers= {'content-type': 'application/x-www-form-urlencoded'}
+    response = await test_client.post('auth/jwt/login', data={'username': email, 'password': 'aaa'}, headers=headers)
+    #response = await test_client.post(f'auth/jwt/login?username={email}&password=aaa', headers=headers)
+    return response.json()
+
