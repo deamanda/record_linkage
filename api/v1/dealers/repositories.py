@@ -10,16 +10,18 @@ from models.dealers import DealerPrice, Dealer
 
 
 async def get_dealer(session: AsyncSession, dealerprice) -> Dealer | None:
+    """Receiving dealer data"""
     return await session.get(Dealer, dealerprice.dealer_id)
 
 
 async def get_dealerprices(
     session: AsyncSession,
     sort_by_date: bool,
-    status: str,
+    status: str | None,
     search_query: str,
     sort_by_price: bool,
 ) -> Sequence[DealerPrice]:
+    """Receiving dealer's goods"""
     query = (
         select(DealerPrice)
         .options(
@@ -30,7 +32,15 @@ async def get_dealerprices(
         )
         .outerjoin(ProductDealer, ProductDealer.key == DealerPrice.id)
         .filter(
-            or_(ProductDealer.status == status, status is None),
+            or_(
+                (ProductDealer.status == status)
+                if status in ["not matched", "matched", "deferred"]
+                else (
+                    ProductDealer.id.is_(None)
+                    if status == "not processed"
+                    else True
+                ),
+            ),
             DealerPrice.product_name.ilike(f"%{search_query}%")
             if search_query
             else True,
@@ -54,6 +64,7 @@ async def get_dealerprices(
 async def get_dealerprice(
     session: AsyncSession, dealerprice_id: int
 ) -> DealerPrice | None:
+    """Receiving dealer's goods by ID"""
     stmt = (
         select(DealerPrice)
         .where(DealerPrice.id == dealerprice_id)
@@ -71,6 +82,7 @@ async def get_dealerprice(
 
 
 async def get_dealers(session: AsyncSession) -> Sequence[Dealer]:
+    """Getting a list of dealers"""
     stmt = select(Dealer).order_by(Dealer.id)
     result = await session.execute(stmt)
     all_dealers = result.scalars().all()

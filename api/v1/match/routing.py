@@ -1,4 +1,3 @@
-import random
 from typing import List
 from sqlalchemy.ext.asyncio import AsyncSession
 from fastapi import APIRouter, Depends
@@ -16,8 +15,7 @@ from api.v1.match.schemas import (
     ProductDealer,
     ProductDealerKeyNone,
 )
-from api.v1.products.depends import product_by_id
-from api.v1.products.schemas import Product
+from api.v1.products.schemas import ProductSmall
 from core.auth import fastapi_users
 
 from core.db_helper import db_helper
@@ -57,16 +55,16 @@ async def get_matched(
 @router.get(
     "/{dealerprice_id}/",
     summary="Получить сопоставляемые товары заказчика",
-    response_model=List[Product],
+    response_model=List[ProductSmall],
 )
 async def get_mapped_products(
+    dealerprice_id: int,
     count: int = Query(ge=1, le=25, default=5),
     session: AsyncSession = Depends(db_helper.scoped_session_dependency),
-    product: Product = Depends(product_by_id),
 ):
-    print(product)  # будет передаваться в match
-    products_id = [random.randint(1, 300) for _ in range(count)]
-    return await get_mapped(session=session, products_id=products_id)
+    return await get_mapped(
+        session=session, dealerprice_id=dealerprice_id, count=count
+    )
 
 
 @router.get(

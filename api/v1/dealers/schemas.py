@@ -28,6 +28,7 @@ class DealerPriceBase(BaseModel):
 
 class DealerPrice(DealerPriceBase):
     id: int
+    dealer: Dealer
     model_config = ConfigDict(from_attributes=True)
 
 

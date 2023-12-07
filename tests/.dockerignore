@@ -14,5 +14,5 @@ poetry.lock
 infra/
 tests/
 .coverage
+.idea/
 .pytest_cache/
-frontend/

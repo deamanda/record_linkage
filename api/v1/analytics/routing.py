@@ -1,4 +1,4 @@
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 
 from sqlalchemy.ext.asyncio import AsyncSession
 from fastapi import APIRouter, Depends, Query
@@ -22,9 +22,12 @@ current_active_user = fastapi_users.current_user(active=True)
 async def get_times_compared(
     dealer_id: int,
     start_date: datetime = Query(
-        default=datetime.now() - timedelta(days=365), description="Start date"
+        default=datetime.now(timezone.utc) - timedelta(days=365),
+        description="Start date",
     ),
-    end_date: datetime = Query(default=datetime.now(), description="End date"),
+    end_date: datetime = Query(
+        default=datetime.now(timezone.utc), description="End date"
+    ),
     session: AsyncSession = Depends(db_helper.scoped_session_dependency),
 ):
     value = await get_compared(
@@ -43,9 +46,12 @@ async def get_times_compared(
 )
 async def get_times_compared(
     start_date: datetime = Query(
-        default=datetime.now() - timedelta(days=365), description="Start date"
+        default=datetime.now(timezone.utc) - timedelta(days=365),
+        description="Start date",
     ),
-    end_date: datetime = Query(default=datetime.now(), description="End date"),
+    end_date: datetime = Query(
+        default=datetime.now(timezone.utc), description="End date"
+    ),
     session: AsyncSession = Depends(db_helper.scoped_session_dependency),
 ):
     value = await get_compared(
@@ -61,9 +67,12 @@ async def get_times_compared(
 )
 async def get_times_compared(
     start_date: datetime = Query(
-        default=datetime.now() - timedelta(days=365), description="Start date"
+        default=datetime.now(timezone.utc) - timedelta(days=365),
+        description="Start date",
     ),
-    end_date: datetime = Query(default=datetime.now(), description="End date"),
+    end_date: datetime = Query(
+        default=datetime.now(timezone.utc), description="End date"
+    ),
     user: User = Depends(current_active_user),
     session: AsyncSession = Depends(db_helper.scoped_session_dependency),
 ):
@@ -84,9 +93,12 @@ async def get_times_compared(
 async def get_times_compared(
     user_id: int,
     start_date: datetime = Query(
-        default=datetime.now() - timedelta(days=365), description="Start date"
+        default=datetime.now(timezone.utc) - timedelta(days=365),
+        description="Start date",
     ),
-    end_date: datetime = Query(default=datetime.now(), description="End date"),
+    end_date: datetime = Query(
+        default=datetime.now(timezone.utc), description="End date"
+    ),
     session: AsyncSession = Depends(db_helper.scoped_session_dependency),
 ):
     value = await get_compared(

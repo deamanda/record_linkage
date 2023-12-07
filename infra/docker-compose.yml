@@ -14,7 +14,7 @@ services:
       - database:/var/lib/postgresql/data/
 
   frontend:
-    image: kirillkatsnelson/prosept
+    image: kirillkatsnelson/prosept:v2
     pull_policy: always
     volumes:
       - ../frontend/:/app/result_build/
@@ -44,26 +44,26 @@ services:
     depends_on:
       - backend
   
-  certbot:
-    image: certbot/certbot:latest
-    volumes:
-      - ./certbot/conf:/etc/letsencrypt
-      - ./certbot/www:/var/www
-    env_file:
-      - .env
-    command:
-      - certonly
-      - --webroot
-      - -w
-      - /var/www
-      - --email=${EMAIL}
-      - --agree-tos
-      - --no-eff-email
-      - --dry-run
-      - -d
-      - ${DOMAIN}
-    depends_on:
-      - nginx                    
+  # certbot:
+  #   image: certbot/certbot:latest
+  #   volumes:
+  #     - ./certbot/conf:/etc/letsencrypt
+  #     - ./certbot/www:/var/www
+  #   env_file:
+  #     - .env
+  #   command:
+  #     - certonly
+  #     - --webroot
+  #     - -w
+  #     - /var/www
+  #     - --email=${EMAIL}
+  #     - --agree-tos
+  #     - --no-eff-email
+  #     - --dry-run
+  #     - -d
+  #     - ${DOMAIN}
+  #   depends_on:
+  #     - nginx                    
                                                                                                                                              
 volumes:
   database:

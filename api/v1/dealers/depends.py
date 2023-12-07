@@ -6,7 +6,6 @@ from api.v1.dealers.repositories import get_dealerprice
 
 from core.db_helper import db_helper
 
-
 from models import DealerPrice
 
 
@@ -14,6 +13,7 @@ async def dealerprice_by_id(
     dealerprice_id: Annotated[int, Path],
     session: AsyncSession = Depends(db_helper.scoped_session_dependency),
 ) -> DealerPrice:
+    """Check Receipt of goods from dealer by ID"""
     dealerprice = await get_dealerprice(
         session=session, dealerprice_id=dealerprice_id
     )

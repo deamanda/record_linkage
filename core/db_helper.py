@@ -13,6 +13,8 @@ from .config import settings
 
 
 class DatabaseHelper:
+    """Database connection session"""
+
     def __init__(self, url: str, echo: bool = False):
         self.engine = create_async_engine(
             url=url,
