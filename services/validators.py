@@ -1,12 +1,7 @@
-from enum import Enum
-
 from fastapi import HTTPException
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 from starlette import status
-
-
-ALLOWED_SORT_FIELDS = ["deferred", "not matched", "matched"]
 
 
 async def validate_availability_check(
@@ -25,20 +20,3 @@ async def validate_availability_check(
             status_code=status.HTTP_404_NOT_FOUND,
             detail=f"{message} with id={value} not found.",
         )
-
-
-class MatchingStatus(str, Enum):
-    """Selecting a filter for matched products"""
-
-    option1 = "not matched"
-    option2 = "matched"
-    option3 = "deferred"
-
-
-class DealerPriceStatus(str, Enum):
-    """Selecting a filter for dealer products"""
-
-    option1 = "not matched"
-    option2 = "matched"
-    option3 = "deferred"
-    option4 = "not processed"

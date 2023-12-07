@@ -15,6 +15,7 @@ from models import DealerPrice, User
 from models.match import ProductsMapped
 from models.products import Product
 from models.product_dealer import ProductDealer
+from services.choices import SortedField
 
 
 async def get_mapped(
@@ -93,7 +94,7 @@ async def post_mapped_later(
 
 async def get_matcheds(
     session: AsyncSession,
-    sort_by_time: bool | None,
+    sort_by: SortedField | None,
     status: str | None,
     search_query: str | None,
     user_id: int | None = None,
@@ -116,11 +117,6 @@ async def get_matcheds(
             if search_query
             else True,
         )
-        .order_by(
-            desc(ProductDealer.created_at)
-            if sort_by_time
-            else ProductDealer.created_at
-        )
     )
 
     if user_id:
@@ -130,6 +126,17 @@ async def get_matcheds(
         stmt = stmt.filter(ProductDealer.user == user_local)
     elif dealer_id:
         stmt = stmt.filter(ProductDealer.dealer_id == dealer_id)
+
+    if sort_by == "descending price":
+        stmt = stmt.order_by(desc(DealerPrice.price))
+    elif sort_by == "ascending price":
+        stmt = stmt.order_by(DealerPrice.price)
+    elif sort_by == "ascending time":
+        stmt = stmt.order_by(ProductDealer.created_at)
+    elif sort_by == "descending time":
+        stmt = stmt.order_by(desc(ProductDealer.created_at))
+    else:
+        stmt = stmt.order_by(ProductDealer.id)
 
     result = await session.execute(stmt)
     all_products = result.scalars().all()
