@@ -4,12 +4,12 @@ from core.db_helper import db_helper
 from sqlalchemy import and_, update, func
 from sqlalchemy.future import select
 from sqlalchemy.ext.asyncio import AsyncSession
-
+import numpy as np
 from api.v1.match.schemas import ProductDealerKey, ProductDealerKeyNone
 from models import DealerPrice, User, ModelVector, Product
 from models.match import ProductsMapped
 from models.product_dealer import ProductDealer
-from services.match import match
+from services.DS_match.match import norm_name, create_embeddings, match
 from services.validators import validate_availability_check
 
 
@@ -48,6 +48,12 @@ async def matching(
         )
         position = await session.execute(pos)
         result_position = position.scalar()
+        if not result_position:
+            await session.close()
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail="Not yet!",
+            )
         dealer_price_another = select(ProductDealer).where(
             and_(
                 ProductDealer.key == mapped_in.key,
@@ -195,7 +201,7 @@ async def matching_later(
                     status=match_status,
                     created_at=func.now(),
                     product_id=None,
-                    positiion=None,
+                    position=None,
                 )
             )
             await session.execute(new_dealer_price)
@@ -221,11 +227,16 @@ async def get_matched(
     await validate_availability_check(
         DealerPrice, dealerprice_id, session, "Dealer Price"
     )
-    result = await session.execute(select(ModelVector.value))
-    valuse = result.scalars().all()
+    result = await session.execute(
+        select(ModelVector.product_key, ModelVector.size, ModelVector.value)
+    )
+    valuse = [[row[0], row[1], list(row[2])] for row in result]
     stmt = select(DealerPrice).where(DealerPrice.id == dealerprice_id)
     result = await session.execute(stmt)
     dealerprice = result.scalar()
-    market_name = [str(dealerprice.product_name)]
+    name = norm_name(dealerprice.product_name)
+    market_name = [create_embeddings(name[0]), name[1]]
+    valuse = np.array(valuse, dtype=object)
     await session.close()
-    return await match(valuse, market_name, count)
+    products = await match(valuse, market_name, count)
+    return products[0]

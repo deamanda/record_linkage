@@ -1,22 +1,33 @@
 import csv
 
 from sqlalchemy import select
-
+from fastapi import HTTPException, status
 from models import Product
+from core.config import logger
 
 
 async def imports_product(file, session):
     """Importing product data from CSV"""
+    logger.info("Import product start.")
     try:
         data = await file.read()
         decoded_data = data.decode("utf-8")
         csv_reader = csv.reader(decoded_data.splitlines(), delimiter=";")
         expected_columns = 15
-        next(csv_reader)
+        first_row = next(csv_reader)
+
+        if first_row[2] != "article":
+            logger.warning(f"{file.filename} is not valid table.")
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail=f"Download a valid table. {file.filename} is not valid table.",
+            )
 
         for row in csv_reader:
             if len(row) != expected_columns:
-                print(f"Skipping row {len(row)}, incorrect number of values.")
+                logger.warning(
+                    f"Skipping row {row}, incorrect number of values."
+                )
                 continue
             try:
                 (
@@ -64,8 +75,8 @@ async def imports_product(file, session):
                 product = Product(**product_data)
                 session.add(product)
             except ValueError as e:
-                print(f"Error processing row {row}: {e}")
-
+                logger.warning(f"Error processing row {row}: {e}")
+        logger.info("Import product complete.")
         await session.commit()
     finally:
         await session.close()

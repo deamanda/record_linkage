@@ -17,12 +17,13 @@ from api.v1.match.schemas import (
 )
 from api.v1.products.schemas import ProductSmall
 from core.auth import fastapi_users
+from core.config import logger
 
 from core.db_helper import db_helper
 from fastapi import Query
 
 from models import User
-from services.validators import MatchingStatus
+from services.choices import MatchingStatus, SortedField
 
 router = APIRouter(prefix="/matching", tags=["Сопоставление"])
 current_active_user = fastapi_users.current_user(active=True)
@@ -34,20 +35,22 @@ current_active_user = fastapi_users.current_user(active=True)
     response_model=LimitOffsetPage[ProductDealer],
 )
 async def get_matched(
+    dealer_name: str = Query(default=None, description="Dealer"),
     search_query: str = Query(default=None, description="Search"),
     status: MatchingStatus = Query(
         default=None, description="Matching status"
     ),
-    sort_by_time: bool = Query(default=None, description="Sort by time"),
+    sort_by: SortedField = Query(default=None, description="Sort by"),
     session: AsyncSession = Depends(db_helper.scoped_session_dependency),
 ):
     value = await get_matcheds(
         session=session,
-        sort_by_time=sort_by_time,
+        sort_by=sort_by,
         status=status,
         search_query=search_query,
         user_id=None,
         user=None,
+        dealer_name=dealer_name,
     )
     return paginate(value)
 
@@ -62,6 +65,7 @@ async def get_mapped_products(
     count: int = Query(ge=1, le=25, default=5),
     session: AsyncSession = Depends(db_helper.scoped_session_dependency),
 ):
+    logger.info("Receiving matched products.")
     return await get_mapped(
         session=session, dealerprice_id=dealerprice_id, count=count
     )
@@ -73,20 +77,22 @@ async def get_mapped_products(
     response_model=LimitOffsetPage[ProductDealer],
 )
 async def get_matched(
+    dealer_name: str = Query(default=None, description="Dealer"),
     search_query: str = Query(default=None, description="Search"),
     status: MatchingStatus = Query(
         default=None, description="Matching status"
     ),
     user: User = Depends(current_active_user),
-    sort_by_time: bool = Query(default=None, description="Sort by time"),
+    sort_by: SortedField = Query(default=None, description="Sort by"),
     session: AsyncSession = Depends(db_helper.scoped_session_dependency),
 ):
     value = await get_matcheds(
         session=session,
-        sort_by_time=sort_by_time,
+        sort_by=sort_by,
         status=status,
         search_query=search_query,
         user=user,
+        dealer_name=dealer_name,
     )
     return paginate(value)
 
@@ -98,43 +104,21 @@ async def get_matched(
 )
 async def get_matched(
     user_id: int,
+    dealer_name: str = Query(default=None, description="Dealer"),
     search_query: str = Query(default=None, description="Search"),
     status: MatchingStatus = Query(
         default=None, description="Matching status"
     ),
-    sort_by_time: bool = Query(default=None, description="Sort by time"),
+    sort_by: SortedField = Query(default=None, description="Sort by"),
     session: AsyncSession = Depends(db_helper.scoped_session_dependency),
 ):
     value = await get_matcheds(
         session=session,
-        sort_by_time=sort_by_time,
+        sort_by=sort_by,
         status=status,
         search_query=search_query,
         user_id=user_id,
-    )
-    return paginate(value)
-
-
-@router.get(
-    "/dealer/{dealer_id}",
-    summary="Получить сопоставленные товары дилера",
-    response_model=LimitOffsetPage[ProductDealer],
-)
-async def get_matched(
-    dealer_id: int,
-    search_query: str = Query(default=None, description="Search"),
-    status: MatchingStatus = Query(
-        default=None, description="Matching status"
-    ),
-    sort_by_time: bool = Query(default=None, description="Sort by time"),
-    session: AsyncSession = Depends(db_helper.scoped_session_dependency),
-):
-    value = await get_matcheds(
-        session=session,
-        sort_by_time=sort_by_time,
-        status=status,
-        search_query=search_query,
-        dealer_id=dealer_id,
+        dealer_name=dealer_name,
     )
     return paginate(value)
 

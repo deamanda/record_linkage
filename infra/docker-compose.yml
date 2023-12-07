@@ -17,6 +17,7 @@ services:
       - "8001:8001"
     volumes:
       - .:/usr/src/app
+      - ./logs/:/app/logs/
     depends_on:
       - db
     env_file:

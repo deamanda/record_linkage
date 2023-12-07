@@ -1,6 +1,6 @@
 from typing import TYPE_CHECKING
 
-from sqlalchemy import Float, ARRAY, Column, Integer, ForeignKey
+from sqlalchemy import Float, ARRAY, Column, Integer, ForeignKey, String
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from models import Base
@@ -15,6 +15,8 @@ class ModelVector(Base):
     """Vectors model (ML)"""
 
     value = Column(ARRAY(Float()))
+    product_key = mapped_column(Integer, unique=True)
+    size = mapped_column(String)
 
 
 class ProductsMapped(Base):

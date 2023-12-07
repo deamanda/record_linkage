@@ -15,7 +15,7 @@ from core.db_helper import db_helper
 from fastapi_pagination import LimitOffsetPage, paginate
 
 from services.import_csv.dealers import imports_dealerprice, imports_dealers
-from services.validators import DealerPriceStatus
+from services.choices import DealerPriceStatus, SortedField
 
 router = APIRouter(prefix="/dealers", tags=["Товары дилера"])
 
@@ -58,20 +58,20 @@ async def get_dealer_price(
     summary="Получить товары дилеров",
 )
 async def get_all_dealer_price(
+    dealer_name: str = Query(default=None, description="Dealer"),
     search_query: str = Query(default=None, description="Search"),
     status: DealerPriceStatus = Query(
         default=None, description="Matching status"
     ),
-    sort_by_date: bool = Query(default=None, description="Sort by date"),
-    sort_by_price: bool = Query(default=None, description="Sort by price"),
+    sort_by: SortedField = Query(default=None, description="Sort by"),
     session: AsyncSession = Depends(db_helper.scoped_session_dependency),
 ):
     value = await get_dealerprices(
         session=session,
-        sort_by_date=sort_by_date,
+        sort_by=sort_by,
         status=status,
         search_query=search_query,
-        sort_by_price=sort_by_price,
+        dealer_name=dealer_name,
     )
     return paginate(value)
 

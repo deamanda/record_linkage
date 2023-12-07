@@ -23,6 +23,7 @@ class UserManager(IntegerIDMixin, BaseUserManager[User, int]):
     async def on_after_register(
         self, user: User, request: Optional[Request] = None
     ):
+        """Action after registration"""
         print(f"User {user.id} has registered.")
 
     async def create(
@@ -31,6 +32,7 @@ class UserManager(IntegerIDMixin, BaseUserManager[User, int]):
         safe: bool = False,
         request: Optional[Request] = None,
     ) -> models.UP:
+        """Action when creating a user"""
         await self.validate_password(user_create.password, user_create)
 
         existing_user = await self.user_db.get_by_email(user_create.email)
