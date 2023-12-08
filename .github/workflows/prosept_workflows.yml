@@ -33,7 +33,7 @@ jobs:
     - name: 'Create env file'
       run: |
         touch .env
-        echo DB_HOST=host.docker.internal >> .env   
+        echo DB_HOST=localhost >> .env   
         echo DB_PORT=5432 >> .env
         echo POSTGRES_DB_TEST=postgres >> .env
         echo POSTGRES_DB=postgres >> .env
