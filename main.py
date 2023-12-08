@@ -39,10 +39,12 @@ app.include_router(
     tags=["Пользователь"],
 )
 
-
+origins = ["https://hackathon-prosept.ddns.net",
+           "http://hackathon-prosept.ddns.net",
+           "http://localhost:3000"]
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    allow_origins=origins,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
