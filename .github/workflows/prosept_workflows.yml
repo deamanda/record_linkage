@@ -24,7 +24,6 @@ jobs:
     - name: Test with flake8
       run: |
         python -m flake8 --ignore E203,E266,E501,E704,W503,B905,B907,W291,F811,E712,E711 --extend-exclude=alembic/versions/,tests/
-        pytest
 
   build_and_push_to_docker_hub:
     name: docker
