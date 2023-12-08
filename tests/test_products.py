@@ -3,7 +3,7 @@ from fastapi import status
 from pathlib import Path
 
 
-pytestmark = pytest.mark.asyncio
+pytestmark = pytest.mark.asyncio(scope="module")
 
 
 async def test_post_products(test_client):
