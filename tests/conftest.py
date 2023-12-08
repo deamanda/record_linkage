@@ -28,10 +28,11 @@ def run_migrations() -> None:
     command.downgrade(alembic_text_cfg, 'base')
 
 
-@pytest.fixture(scope='session')
+@pytest.fixture(scope="session")
 def event_loop():
-    loop = asyncio.new_event_loop()
-    asyncio.set_event_loop(loop)
+    """Make the loop session scope to use session async fixtures."""
+    policy = asyncio.get_event_loop_policy()
+    loop = policy.new_event_loop()
     yield loop
 
 
