@@ -37,7 +37,7 @@ def event_loop():
     yield loop
 
 
-@pytest_asyncio.fixture(scope='session', autouse=True)
+@pytest_asyncio.fixture()
 async def test_client():
     from main import app
     from core.auth import current_user
