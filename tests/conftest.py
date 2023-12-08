@@ -30,10 +30,8 @@ def run_migrations() -> None:
 
 @pytest.fixture(scope='session')
 def event_loop():
-    try:
-        loop = asyncio.get_running_loop()
-    except RuntimeError:
-        loop = asyncio.new_event_loop()
+    loop = asyncio.new_event_loop()
+    asyncio.set_event_loop(loop)
     yield loop
 
 
