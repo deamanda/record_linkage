@@ -14,10 +14,6 @@ from fastapi_users.password import PasswordHelper
 TEST_DB = f"postgresql+asyncpg://{DB_USER}:{DB_PASS}@{DB_HOST}:{DB_PORT}/{DB_NAME_TEST}"
 conf.settings = Settings(db_url=TEST_DB)
 
-pytestmark = pytest.mark.anyio
-
-asyncio.get_event_loop()
-
 @pytest.fixture(autouse=True)
 def run_migrations() -> None:
     from alembic.config import Config

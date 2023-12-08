@@ -2,8 +2,6 @@ import pytest
 from fastapi import status
 
 
-
-
 async def test_match_dealer_price(test_client, test_product, test_dealer, test_dealer_price):
     response = await test_client.get('v1/matching/1/')
     assert response.status_code == status.HTTP_200_OK
