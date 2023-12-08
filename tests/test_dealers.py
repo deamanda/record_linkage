@@ -3,7 +3,7 @@ from fastapi import status
 from pathlib import Path
 
 
-pytestmark = pytest.mark.asyncio(scope="module")
+pytestmark = pytest.mark.asyncio(scope="session")
 
 
 async def test_get_dealers(test_client, test_dealer):
