@@ -35,10 +35,9 @@ def event_loop():
     except RuntimeError:
         loop = asyncio.new_event_loop()
     yield loop
-    loop.close()
 
 
-@pytest_asyncio.fixture(scope='session')
+@pytest_asyncio.fixture(autouse=True)
 async def test_client():
     from main import app
     from core.auth import current_user
