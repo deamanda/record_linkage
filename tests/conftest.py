@@ -38,7 +38,7 @@ def event_loop():
     loop.close()
 
 
-@pytest_asyncio.fixture
+@pytest_asyncio.fixture(scope='session')
 async def test_client():
     from main import app
     from core.auth import current_user
