@@ -3,7 +3,8 @@ name: prosept_hakaton_8
 on:
   push:
     branches:
-      - feature/tests
+      - main
+      - develop
 
 jobs:
   tests:
