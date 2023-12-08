@@ -3,7 +3,6 @@ from fastapi import status
 from pathlib import Path
 
 
-pytestmark = pytest.mark.asyncio
 
 
 async def test_post_products(test_client):
