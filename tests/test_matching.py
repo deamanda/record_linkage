@@ -2,7 +2,7 @@ import pytest
 from fastapi import status
 
 
-pytestmark = pytest.mark.asyncio(scope="module")
+pytestmark = pytest.mark.asyncio
 
 
 async def test_match_dealer_price(test_client, test_product, test_dealer, test_dealer_price):
