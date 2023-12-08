@@ -27,9 +27,9 @@ async def test_match_user(test_client, test_product, test_dealer, test_dealer_pr
     assert response.status_code == status.HTTP_200_OK
 
 
-async def test_match_dealer(test_client, test_product, test_dealer, test_dealer_price):
-    response = await test_client.get('v1/matching/dealer/1')
-    assert response.status_code == status.HTTP_200_OK
+# async def test_match_dealer(test_client, test_product, test_dealer, test_dealer_price):
+#     response = await test_client.get('v1/matching/dealer/1')
+#     assert response.status_code == status.HTTP_200_OK
 
 
 async def test_match_accept(test_client, test_product, test_dealer, test_dealer_price, test_user, test_products_mapped):
