@@ -59,7 +59,7 @@ async def get_dealerprices(
     elif sort_by == "descending time":
         query = query.order_by(desc(DealerPrice.date))
     else:
-        query = query.order_by(DealerPrice.id)
+        query = query.order_by(desc(DealerPrice.date))
 
     result = await session.execute(query)
     all_dealerprices = result.scalars().all()
